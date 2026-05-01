@@ -1,70 +1,68 @@
-// ... (Önceki kodun devamına Görev Atama görünümü eklendi)
+// ... (İlgili kısımlara eklenecek Yakıt ve Ödeme görünümleri)
 
-        {/* GÖREV ATAMA GÖRÜNÜMÜ */}
-        {activeTab === 'Görev Atama' && (
-          <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-            {/* SOL: GÖREV LİSTESİ */}
-            <div className="col-span-8 bg-[#121418] border border-white/5 rounded-[2rem] flex flex-col overflow-hidden">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">Görev Havuzu</h3>
-                <button className="bg-white/5 px-4 py-2 rounded-lg text-[10px] font-black uppercase text-gray-400 border border-white/5 hover:text-white transition-all">
-                  + Yeni Rota Oluştur
-                </button>
+        {/* YAKIT RAPORU GÖRÜNÜMÜ */}
+        {activeTab === 'Yakıt Raporu' && (
+          <div className="space-y-6">
+            <div className="bg-[#121418] border border-white/5 rounded-[2rem] p-8 relative overflow-hidden">
+              <div className="flex justify-between items-start relative z-10">
+                <div>
+                  <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Onay Bekleyen Fişler</h3>
+                  <p className="text-xs text-gray-600 font-bold mt-1">Sürücülerden gelen anlık yakıt girişleri</p>
+                </div>
+                <div className="bg-red-500/20 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black uppercase border border-red-500/10">
+                  1 Yeni Bildirim
+                </div>
               </div>
               
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {gorevler.map((g, idx) => (
-                  <div key={idx} className="bg-black/40 border border-white/5 p-5 rounded-2xl flex items-center justify-between group hover:border-[#00df82]/30 transition-all">
-                    <div className="flex items-center gap-6">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black italic text-xs ${g.kisi === '—' ? 'bg-red-500/10 text-red-500' : 'bg-[#00df82]/10 text-[#00df82]'}`}>
-                        {g.id}
-                      </div>
-                      <div>
-                        <div className="text-white font-bold text-sm">{g.adres}</div>
-                        <div className="text-[10px] text-gray-600 font-bold uppercase mt-1">Son Güncelleme: 12:45</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      {g.kisi === '—' ? (
-                        <button className="bg-[#00df82] text-black px-4 py-2 rounded-lg text-[10px] font-black uppercase">Sürücü Ata</button>
-                      ) : (
-                        <div className="text-right mr-4">
-                          <div className="text-[9px] text-gray-600 font-black uppercase">Atanan Sürücü</div>
-                          <div className="text-white text-xs font-bold uppercase italic">{g.kisi}</div>
-                        </div>
-                      )}
-                      <ChevronRight className="text-gray-700 group-hover:translate-x-1 transition-transform" size={18} />
-                    </div>
+              <div className="mt-8 bg-black/40 border border-white/5 p-6 rounded-3xl flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center border border-white/5">
+                    <Fuel className="text-orange-500" size={24} />
                   </div>
-                ))}
+                  <div>
+                    <div className="text-white font-black italic">Shell - Berlin South</div>
+                    <div className="text-[10px] text-gray-600 font-black uppercase mt-1">Sürücü: Thomas Klein • 45 Litre Diesel</div>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <button className="bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase transition-all">Reddet</button>
+                  <button className="bg-[#00df82] text-black px-6 py-3 rounded-xl text-[10px] font-black uppercase transition-all shadow-[0_0_15px_rgba(0,223,130,0.2)]">Onayla</button>
+                </div>
               </div>
             </div>
 
-            {/* SAĞ: ÖZET VE HARİTA ÖNİZLEME */}
-            <div className="col-span-4 space-y-6">
-              <div className="bg-[#121418] border border-white/5 rounded-[2rem] p-6 h-1/2 relative overflow-hidden">
-                <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Anlık Rota İzleme</div>
-                <div className="absolute inset-6 mt-12 bg-black/60 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center p-6">
-                  <div className="w-16 h-16 bg-[#00df82]/10 rounded-full flex items-center justify-center mb-4 animate-pulse">
-                     <Send className="text-[#00df82]" size={24} />
-                  </div>
-                  <div className="text-xs font-black text-white uppercase italic">Canlı Harita Servisi</div>
-                  <div className="text-[9px] text-gray-600 font-bold uppercase mt-2 tracking-tighter italic">GPS verileri bekleniyor...</div>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-[#121418] border border-white/5 rounded-[2rem] p-6">
+                <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Haftalık Yakıt Tüketimi</div>
+                <div className="h-32 flex items-end gap-2 px-2">
+                   {[40, 70, 45, 90, 65, 80, 50].map((h, i) => (
+                     <div key={i} style={{height: `${h}%`}} className={`flex-1 rounded-t-lg transition-all hover:brightness-125 ${i === 3 ? 'bg-[#00df82]' : 'bg-white/5'}`} />
+                   ))}
                 </div>
               </div>
+              <div className="bg-[#121418] border border-white/5 rounded-[2rem] p-6 flex flex-col justify-center text-center">
+                 <div className="text-4xl font-black text-white italic tracking-tighter">€4.250,00</div>
+                 <div className="text-[10px] font-black text-gray-600 uppercase mt-2">Bu Ayki Toplam Gider</div>
+              </div>
+            </div>
+          </div>
+        )}
 
-              <div className="bg-[#00df82] rounded-[2rem] p-8 flex flex-col justify-between group cursor-pointer relative overflow-hidden h-[calc(50%-24px)]">
-                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
-                  <Package size={80} strokeWidth={3} className="text-black" />
-                </div>
-                <div className="relative z-10">
-                  <div className="text-black font-black text-2xl italic tracking-tighter leading-none">HIZLI<br/>RAPOR AL</div>
-                  <p className="text-black/60 text-[10px] font-black uppercase mt-2">Günlük operasyon özeti</p>
-                </div>
-                <div className="relative z-10 flex items-center gap-2 text-black font-black text-xs uppercase tracking-widest">
-                  DOSYAYI İNDİR <ChevronRight size={14} />
-                </div>
-              </div>
+        {/* ÖDEME GÖRÜNÜMÜ */}
+        {activeTab === 'Ödeme' && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="bg-gradient-to-br from-[#162a22] to-[#0a0b0d] border border-[#00df82]/20 rounded-[2.5rem] p-10 relative overflow-hidden">
+               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#00df82]/10 blur-[80px]" />
+               <div className="relative z-10">
+                 <div className="bg-[#00df82] text-black w-fit px-4 py-1 rounded-full text-[10px] font-black uppercase italic mb-6">Aktif Abonelik: PRO</div>
+                 <h2 className="text-5xl font-black text-white italic tracking-tighter uppercase mb-2">€1.290,00</h2>
+                 <p className="text-gray-400 font-bold text-sm">Bir sonraki fatura tarihi: <span className="text-white">15 Mayıs 2026</span></p>
+                 
+                 <div className="mt-10 flex gap-4">
+                   <button className="flex-1 bg-[#00df82] text-black py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-[#00df82]/10 transition-all hover:scale-[1.02]">Faturayı İndir</button>
+                   <button className="flex-1 bg-white/5 border border-white/10 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-white/10">Planı Değiştir</button>
+                 </div>
+               </div>
             </div>
           </div>
         )}
