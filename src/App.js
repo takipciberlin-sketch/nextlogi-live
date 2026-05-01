@@ -2,8 +2,8 @@ import React, { useState } from "react";
 
 export default function NextLogiFixed() {
   const [quantities, setQuantities] = useState({});
+  const [activeCategory, setActiveCategory] = useState("ALL");
 
-  // Sadece istenen kategoriler eklendi, yapı bozulmadı
   const PRODUCTS = [
     { id: 1, name: "Bullen-Vorderviertel ohne Knochen", cat: "RIND / BULLE", color: "#e67e22" },
     { id: 2, name: "Bullen-Keule mit Knochen", cat: "RIND / BULLE", color: "#e67e22" },
@@ -13,7 +13,8 @@ export default function NextLogiFixed() {
     { id: 6, name: "Kalbs-Schnitzel", cat: "KALB", color: "#3498db" }
   ];
 
-  const categories = ["RIND / BULLE", "HÄHNCHEN", "KALB"];
+  const categories = ["ALL", "RIND / BULLE", "HÄHNCHEN", "KALB"];
+  const filteredProducts = activeCategory === "ALL" ? PRODUCTS : PRODUCTS.filter(p => p.cat === activeCategory);
   const activeItems = PRODUCTS.filter(p => Number(quantities[p.id]) > 0);
 
   return (
@@ -30,34 +31,47 @@ export default function NextLogiFixed() {
 
       {/* ANA PANEL */}
       <div style={{ flex: 1, padding: '20px' }}>
-        <div style={{ backgroundColor: '#161b22', padding: '15px 20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', marginBottom: '25px', border: '1px solid #30363d' }}>
+        <div style={{ backgroundColor: '#161b22', padding: '15px 20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', marginBottom: '20px', border: '1px solid #30363d' }}>
           <span style={{ fontSize: '14px' }}>👤 Max Bauer GmbH</span>
           <span style={{ color: '#2ecc71', fontSize: '13px', fontWeight: 'bold' }}>ADIM 2/2</span>
         </div>
 
-        {/* Kategorilere Göre Listeleme */}
-        {categories.map(catName => (
-          <div key={catName} style={{ marginBottom: '30px' }}>
-            <div style={{ marginBottom: '15px' }}>
-              <h4 style={{ color: PRODUCTS.find(p => p.cat === catName).color, fontSize: '12px', marginBottom: '5px', fontWeight: 'bold' }}>{catName}</h4>
-              <div style={{ height: '1px', backgroundColor: PRODUCTS.find(p => p.cat === catName).color, width: '100%' }}></div>
-            </div>
+        {/* YAN YANA KATEGORİ BUTONLARI */}
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              style={{
+                backgroundColor: activeCategory === cat ? '#1a3a2a' : '#161b22',
+                color: activeCategory === cat ? '#4ade80' : '#8b949e',
+                border: `1px solid ${activeCategory === cat ? '#2ecc71' : '#30363d'}`,
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
 
-            {PRODUCTS.filter(p => p.cat === catName).map(p => (
-              <div key={p.id} style={{ 
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                backgroundColor: '#161b22', padding: '15px 20px', borderRadius: '8px', marginBottom: '10px',
-                border: quantities[p.id] > 0 ? '1px solid #2ecc71' : '1px solid transparent'
-              }}>
-                <span style={{ fontSize: '14px' }}>{p.name}</span>
-                <input 
-                  type="number" 
-                  value={quantities[p.id] || 0}
-                  onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
-                  style={{ width: '60px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', textAlign: 'center', borderRadius: '4px', padding: '8px', fontSize: '14px' }}
-                />
-              </div>
-            ))}
+        {/* ÜRÜN LİSTESİ */}
+        {filteredProducts.map(p => (
+          <div key={p.id} style={{ 
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            backgroundColor: '#161b22', padding: '15px 20px', borderRadius: '8px', marginBottom: '10px',
+            border: quantities[p.id] > 0 ? '1px solid #2ecc71' : '1px solid transparent'
+          }}>
+            <span style={{ fontSize: '14px' }}>{p.name}</span>
+            <input 
+              type="number" 
+              value={quantities[p.id] || 0}
+              onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
+              style={{ width: '60px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', textAlign: 'center', borderRadius: '4px', padding: '8px', fontSize: '14px' }}
+            />
           </div>
         ))}
       </div>
