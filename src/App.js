@@ -1,110 +1,61 @@
 import React, { useState, useEffect } from "react";
 
-// --- SABİT ÜRÜN LİSTESİ ---
-const PRODUCTS = [
-  { id: 1, name: "Kalb Döner 10kg", unit: "Spieß" },
-  { id: 2, name: "Hähnchen Döner 5kg", unit: "Spieß" },
-  { id: 3, name: "Sucuk (Kangal)", unit: "Kg" }
-];
-
-export default function NextLogiV20_Final() {
-  // 1. HAFIZADAN ÇAĞIR: Sayfa yenilendiğinde verilerin kaybolmasını engeller
+export default function NextLogiV20_Pro() {
+  // Hafıza yönetimi
   const [quantities, setQuantities] = useState(() => {
     const saved = localStorage.getItem("nextlogi_cart");
     return saved ? JSON.parse(saved) : {};
   });
 
-  const [showResult, setShowResult] = useState(false);
-  const [orderId, setOrderId] = useState("");
-
-  // 2. HAFIZAYA YAZ: Her giriş yapıldığında tarayıcıya otomatik kaydeder
   useEffect(() => {
     localStorage.setItem("nextlogi_cart", JSON.stringify(quantities));
   }, [quantities]);
 
-  const cartItems = PRODUCTS.filter(p => quantities[p.id] > 0);
-  const totalWeight = cartItems.reduce((sum, item) => sum + Number(quantities[item.id] || 0), 0);
-
-  // 3. SİPARİŞİ ONAYLA: Sonuç ekranını tetikler
-  const handleOrder = () => {
-    const code = "ORD-" + Math.floor(1000 + Math.random() * 9000);
-    setOrderId(code);
-    setShowResult(true);
-  };
-
   return (
-    <div style={{ backgroundColor: '#05070a', color: 'white', minHeight: '100vh', display: 'flex', fontFamily: 'sans-serif' }}>
+    <div style={{ display: 'flex', backgroundColor: '#0d1117', color: '#c9d1d9', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       
-      {/* SOL PANEL: Ürün Girişi (image_496361.jpg tasarımı) */}
-      <div style={{ flex: 1, padding: '40px', borderRight: '1px solid #1e293b' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
-          <div style={{ background: '#1e293b', padding: '10px', borderRadius: '10px', cursor: 'pointer' }}>←</div>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>Döner Point</h2>
-        </div>
-
-        {PRODUCTS.map(p => (
-          <div key={p.id} style={{ 
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px', 
-            backgroundColor: '#0f172a', marginBottom: '10px', borderRadius: '15px', 
-            border: quantities[p.id] > 0 ? '1px solid #3b82f6' : '1px solid #1e293b' 
-          }}>
-            <span style={{ fontWeight: 'bold', fontSize: '18px' }}>{p.name}</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <input 
-                type="number" 
-                value={quantities[p.id] || ""} 
-                onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
-                style={{ width: '80px', backgroundColor: '#05070a', color: 'white', border: '1px solid #3b82f6', borderRadius: '10px', padding: '10px', textAlign: 'center', fontWeight: 'bold' }}
-              />
-              <span style={{ color: '#475569', width: '40px' }}>{p.unit}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* SAĞ PANEL: Canlı Sepet Özet */}
-      <div style={{ width: '380px', padding: '30px', backgroundColor: '#05070a', display: 'flex', flexDirection: 'column' }}>
-        <h3 style={{ fontSize: '12px', color: '#64748b', letterSpacing: '1.5px', marginBottom: '30px' }}>SİPARİŞ ÖZETİ</h3>
+      {/* 1. SOL YAN MENÜ (Sidebar) */}
+      <div style={{ width: '240px', backgroundColor: '#161b22', borderRight: '1px solid #30363d', padding: '20px', display: 'flex', flexDirection: 'column' }}>
+        <h1 style={{ color: '#2ecc71', fontSize: '20px', fontWeight: 'bold', marginBottom: '40px' }}>NEXTLOGI</h1>
         
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          {cartItems.map(item => (
-            <div key={item.id} style={{ padding: '15px', backgroundColor: '#0f172a', borderRadius: '15px', marginBottom: '10px', borderLeft: '4px solid #3b82f6' }}>
-              <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{item.name}</div>
-              <div style={{ color: '#3b82f6', marginTop: '5px' }}>{quantities[item.id]} {item.unit}</div>
+        <nav style={{ flex: 1 }}>
+          {['Dashboard', 'Sürücüler', 'Görev Atama', 'Müşteriler', 'Ürünler & Sipariş', 'Yakıt Raporu', 'Ödeme'].map((item) => (
+            <div key={item} style={{ 
+              padding: '12px 15px', borderRadius: '10px', marginBottom: '5px', cursor: 'pointer',
+              backgroundColor: item === 'Ürünler & Sipariş' ? '#1f6745' : 'transparent',
+              color: item === 'Ürünler & Sipariş' ? '#aff5b4' : '#8b949e'
+            }}>
+              {item}
             </div>
           ))}
-        </div>
+        </nav>
 
-        <div style={{ borderTop: '1px solid #1e293b', padding: '20px 0', display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ color: '#64748b' }}>Toplam Miktar</span>
-          <span style={{ fontWeight: 'bold' }}>{totalWeight} Birim</span>
+        <div style={{ padding: '15px', backgroundColor: '#0d1117', borderRadius: '12px', fontSize: '12px' }}>
+          <div style={{ fontWeight: 'bold', color: 'white' }}>Klaus Müller</div>
+          <div style={{ color: '#8b949e' }}>Müller GmbH</div>
+          <button style={{ background: 'none', border: 'none', color: '#8b949e', marginTop: '10px', cursor: 'pointer' }}>← Çıkış Yap</button>
         </div>
-
-        <button 
-          onClick={handleOrder}
-          disabled={cartItems.length === 0}
-          style={{ width: '100%', padding: '20px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer', transition: '0.2s' }}
-        >
-          SİPARİŞİ ONAYLA
-        </button>
       </div>
 
-      {/* ✅ SONUÇ EKRANI (Modal) */}
-      {showResult && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ backgroundColor: '#0f172a', padding: '50px', borderRadius: '30px', textAlign: 'center', border: '1px solid #3b82f6' }}>
-            <div style={{ fontSize: '50px', marginBottom: '15px' }}>✅</div>
-            <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '10px' }}>SİPARİŞ KAYDEDİLDİ</h2>
-            <p style={{ color: '#64748b' }}>Takip No: <span style={{ color: 'white' }}>{orderId}</span></p>
-            <button 
-              onClick={() => { setShowResult(false); setQuantities({}); localStorage.removeItem("nextlogi_cart"); }}
-              style={{ marginTop: '30px', padding: '15px 40px', backgroundColor: 'white', color: 'black', borderRadius: '15px', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}
-            >
-              YENİ SİPARİŞE BAŞLA
-            </button>
+      {/* 2. ANA İÇERİK ALANI */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        
+        {/* ÜST BİLGİ ÇUBUĞU (Header) */}
+        <div style={{ padding: '20px', display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #30363d' }}>
+          <button style={{ backgroundColor: '#21262d', border: '1px solid #30363d', color: 'white', padding: '8px 15px', borderRadius: '8px' }}>← Müşteri Değiştir</button>
+          <div style={{ flex: 1, backgroundColor: '#161b22', padding: '10px 20px', borderRadius: '12px', border: '1px solid #30363d', display: 'flex', justifyContent: 'space-between' }}>
+            <span>👤 Max Bauer GmbH</span>
+            <span style={{ color: '#2ecc71', fontWeight: 'bold' }}>ADIM 2/2</span>
           </div>
+          <input placeholder="Ürün ara..." style={{ backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', padding: '8px 15px', borderRadius: '8px', width: '200px' }} />
+          <button style={{ backgroundColor: '#1f6feb', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '8px' }}>Yönetim</button>
         </div>
-      )}
+
+        {/* İÇERİK (Bir sonraki adımda kategori ve listeyi buraya ekleyeceğiz) */}
+        <div style={{ flex: 1, padding: '20px' }}>
+          <p style={{ color: '#8b949e' }}>Yerleşim hazır. Şimdi kategorileri ve ürün listesini ekleyelim mi?</p>
+        </div>
+      </div>
     </div>
   );
 }
