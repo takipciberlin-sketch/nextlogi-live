@@ -1,40 +1,23 @@
 import React, { useState, useEffect } from "react";
 
-export default function NextLogiFullInventory() {
-  // 1. PDF'DEKİ TÜM ÜRÜNLERİN EKSİKSİZ LİSTESİ
+export default function NextLogiSystemFixed() {
+  // 1. PDF ÜRÜN LİSTESİ (SABİT)
   const fullInventory = [
-    // Rind/Bulle
     { id: 1, name: "Bullen-Vorderviertel ohne Knochen", cat: "Rind/Bulle", unit: "kg" },
     { id: 2, name: "Bullen-Keule mit Knochen", cat: "Rind/Bulle", unit: "kg" },
     { id: 3, name: "Rinder-Nacken", cat: "Rind/Bulle", unit: "kg" },
-    { id: 4, name: "Rinder-Brust", cat: "Rind/Bulle", unit: "kg" },
-    { id: 5, name: "Rinder-Entrecote", cat: "Rind/Bulle", unit: "kg" },
-    // Hähnchen
     { id: 31, name: "Hähnchen-Keule mit Knochen", cat: "Hähnchen", unit: "kg" },
     { id: 32, name: "Hähnchen-Unterkeule", cat: "Hähnchen", unit: "kg" },
-    { id: 33, name: "Hähnchen-Brustfilet", cat: "Hähnchen", unit: "kg" },
-    { id: 34, name: "Hähnchen-Flügel", cat: "Hähnchen", unit: "kg" },
-    // Kalb
     { id: 45, name: "Kalbs-Keule", cat: "Kalb", unit: "kg" },
-    { id: 46, name: "Kalbs-Rücken", cat: "Kalb", unit: "kg" },
     { id: 48, name: "KalbsSchwanz", cat: "Kalb", unit: "kg" },
-    // Lamm
-    { id: 50, name: "Lamm-Keule", cat: "Lamm", unit: "kg" },
-    { id: 51, name: "Lamm-Lachs", cat: "Lamm", unit: "kg" },
     { id: 53, name: "Lamm-Kopf gebrannt", cat: "Lamm", unit: "kg" },
-    // Pute
     { id: 54, name: "Puten-Flügel-Fleisch", cat: "Pute", unit: "kg" },
-    { id: 55, name: "Puten-Oberkeule", cat: "Pute", unit: "kg" },
-    { id: 56, name: "Pute ganz", cat: "Pute", unit: "kg" },
-    // Geflügel & Verarbeitet
-    { id: 57, name: "Wiener Geflügel", cat: "Geflügel", unit: "kg" },
-    { id: 60, name: "Gemüscht Häckfleisch", cat: "Verarbeitet", unit: "kg" },
-    { id: 61, name: "Rinder-Häckfleisch", cat: "Verarbeitet", unit: "kg" }
+    { id: 60, name: "Gemüscht Häckfleisch", cat: "Verarbeitet", unit: "kg" }
   ];
 
   const defaultCats = ["Rind/Bulle", "Hähnchen", "Kalb", "Lamm", "Pute", "Geflügel", "Verarbeitet"];
 
-  // STATE VE HAFIZA
+  // STATE VE LOCALSTORAGE
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem("nl_vFinal_prod");
     return saved ? JSON.parse(saved) : fullInventory;
@@ -51,9 +34,9 @@ export default function NextLogiFullInventory() {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ name: "", cat: "Rind/Bulle", unit: "kg" });
   const [isAddingNewCat, setIsAddingNewCat] = useState(false);
   const [newCatInput, setNewCatInput] = useState("");
+  const [formData, setFormData] = useState({ name: "", cat: "Rind/Bulle", unit: "kg" });
 
   useEffect(() => {
     localStorage.setItem("nl_vFinal_prod", JSON.stringify(products));
@@ -70,6 +53,23 @@ export default function NextLogiFullInventory() {
       setProducts([...products, { ...formData, id: Date.now() }]);
     }
     closeModal();
+  };
+
+  const handleAddNewCategory = () => {
+    if (newCatInput.trim() && !categories.includes(newCatInput)) {
+      setCategories([...categories, newCatInput.trim()]);
+      setFormData({ ...formData, cat: newCatInput.trim() });
+      setNewCatInput("");
+      setIsAddingNewCat(false);
+    }
+  };
+
+  const handleDeleteCategory = () => {
+    if (categories.length > 1) {
+      const updated = categories.filter(c => c !== formData.cat);
+      setCategories(updated);
+      setFormData({ ...formData, cat: updated[0] });
+    }
   };
 
   const closeModal = () => {
@@ -137,29 +137,36 @@ export default function NextLogiFullInventory() {
         </button>
       </div>
 
-      {/* MODAL */}
+      {/* MODAL - DÜZELTİLEN BÖLÜM */}
       {isModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <div style={{ backgroundColor: '#161b22', padding: '25px', borderRadius: '15px', width: '380px' }}>
-            <h3>{editingId ? "Ürünü Düzenle" : "Yeni Ürün"}</h3>
-            <input placeholder="Ürün Adı" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} style={{ width: '100%', padding: '10px', marginBottom: '15px', backgroundColor: '#0d1117', color: 'white', border: '1px solid #30363d', borderRadius: '8px' }} />
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+          <div style={{ backgroundColor: '#161b22', padding: '30px', borderRadius: '20px', width: '400px', border: '1px solid #30363d' }}>
+            <h3 style={{ marginTop: 0 }}>{editingId ? "Ürünü Düzenle" : "Yeni Ürün"}</h3>
+            <input placeholder="Ürün Adı" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} style={{ width: '100%', padding: '12px', marginBottom: '20px', backgroundColor: '#0d1117', color: 'white', border: '1px solid #30363d', borderRadius: '8px' }} />
             
-            <div style={{ display: 'flex', gap: '5px', marginBottom: '15px' }}>
-              <select value={formData.cat} onChange={e => setFormData({...formData, cat: e.target.value})} style={{ flex: 1, padding: '10px', backgroundColor: '#0d1117', color: 'white', borderRadius: '8px' }}>
-                {categories.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-              <button onClick={() => {
-                const updated = categories.filter(c => c !== formData.cat);
-                setCategories(updated);
-                setFormData({...formData, cat: updated[0]});
-              }} style={{ backgroundColor: '#f85149', color: 'white', border: 'none', borderRadius: '8px', padding: '0 10px', cursor: 'pointer' }}>Sil</button>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+              {!isAddingNewCat ? (
+                <>
+                  <select value={formData.cat} onChange={e => setFormData({...formData, cat: e.target.value})} style={{ flex: 1, padding: '12px', backgroundColor: '#0d1117', color: 'white', borderRadius: '8px', border: '1px solid #30363d' }}>
+                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                  <button onClick={handleDeleteCategory} style={{ backgroundColor: '#f85149', color: 'white', border: 'none', borderRadius: '8px', padding: '0 15px', cursor: 'pointer', fontWeight: 'bold' }}>Sil</button>
+                  <button onClick={() => setIsAddingNewCat(true)} style={{ backgroundColor: '#30363d', color: '#2ecc71', border: 'none', borderRadius: '8px', padding: '0 15px', cursor: 'pointer', fontWeight: 'bold' }}>+Yeni</button>
+                </>
+              ) : (
+                <>
+                  <input autoFocus placeholder="Yeni Kategori..." value={newCatInput} onChange={e => setNewCatInput(e.target.value)} style={{ flex: 1, padding: '12px', backgroundColor: '#0d1117', color: 'white', borderRadius: '8px', border: '1px solid #30363d' }} />
+                  <button onClick={handleAddNewCategory} style={{ backgroundColor: '#2ecc71', color: '#090d11', border: 'none', padding: '0 15px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Ekle</button>
+                  <button onClick={() => setIsAddingNewCat(false)} style={{ backgroundColor: '#30363d', color: 'white', border: 'none', borderRadius: '8px', padding: '0 10px', cursor: 'pointer' }}>x</button>
+                </>
+              )}
             </div>
 
-            <input placeholder="Birim (kg...)" value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} style={{ width: '100%', padding: '10px', marginBottom: '20px', backgroundColor: '#0d1117', color: 'white', border: '1px solid #30363d', borderRadius: '8px' }} />
-            
+            <input placeholder="Birim (kg, Adet...)" value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} style={{ width: '100%', padding: '12px', marginBottom: '25px', backgroundColor: '#0d1117', color: 'white', border: '1px solid #30363d', borderRadius: '8px' }} />
+
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={closeModal} style={{ flex: 1, padding: '12px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>İptal</button>
-              <button onClick={handleSave} style={{ flex: 1, padding: '12px', borderRadius: '8px', backgroundColor: '#2ecc71', color: '#0d1117', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>Kaydet</button>
+              <button onClick={closeModal} style={{ flex: 1, padding: '14px', backgroundColor: 'transparent', color: '#8b949e', border: 'none', borderRadius: '10px', cursor: 'pointer' }}>İptal</button>
+              <button onClick={handleSave} style={{ flex: 1, padding: '14px', backgroundColor: '#2ecc71', color: '#090d11', fontWeight: 'bold', border: 'none', borderRadius: '10px', cursor: 'pointer' }}>Kaydet</button>
             </div>
           </div>
         </div>
