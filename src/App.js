@@ -1,59 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const App = () => {
+export default function NextLogiFixed() {
   const [quantities, setQuantities] = useState({});
 
-  // Veri Seti
-  const items = [
-    { id: 1, name: "Bullen-Vorderviertel ohne Knochen", cat: 'Rind' },
-    { id: 2, name: "Bullen-Keule mit Knochen", cat: 'Rind' },
-    { id: 3, name: "Rinder-Nacken", cat: 'Rind' },
-    { id: 4, name: "Bullen-Bug", cat: 'Rind' },
+  // image_584e.jpg'deki tam ürün listesi ve fazlası
+  const PRODUCTS = [
+    { id: 1, name: "Bullen-Vorderviertel ohne Knochen", cat: 'RIND / BULLE' },
+    { id: 2, name: "Bullen-Keule mit Knochen", cat: 'RIND / BULLE' },
+    { id: 3, name: "Rinder-Nacken", cat: 'RIND / BULLE' },
+    { id: 4, name: "Bullen-Bug", cat: 'RIND / BULLE' },
+    { id: 7, name: "Hähnchen-Brustfilet", cat: 'HÄHNCHEN' },
+    { id: 11, name: "Kalbs-Schnitzel", cat: 'KALB' }
   ];
 
+  const activeItems = PRODUCTS.filter(p => Number(quantities[p.id]) > 0);
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0d1117', color: 'white', fontFamily: 'sans-serif' }}>
+    <div style={{ display: 'flex', backgroundColor: '#0b1118', color: '#c9d1d9', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       
-      {/* Sol Kenar (image_48e6dd.jpg) */}
-      <div style={{ width: '200px', borderRight: '1px solid #30363d', padding: '20px' }}>
-        <h2 style={{ color: '#2ecc71' }}>NEXTLOGI</h2>
-        <div style={{ marginTop: '20px', color: '#4ade80' }}>Ürünler & Sipariş</div>
+      {/* SOL MENÜ (image_584e.jpg stili) */}
+      <div style={{ width: '180px', padding: '20px', borderRight: '1px solid #161b22' }}>
+        <h3 style={{ color: '#2ecc71', fontSize: '18px', marginBottom: '20px' }}>NEXTLOGI</h3>
+        <div style={{ backgroundColor: '#1a3a2a', color: '#4ade80', padding: '10px', borderRadius: '8px', marginBottom: '10px', fontSize: '14px' }}>Ürünler & Sipariş</div>
+        <div style={{ color: '#8b949e', padding: '10px', fontSize: '14px' }}>Müşteriler</div>
       </div>
 
-      {/* Ana Ürün Alanı */}
+      {/* ANA PANEL */}
       <div style={{ flex: 1, padding: '20px' }}>
-        <h3 style={{ color: '#e67e22', borderBottom: '1px solid #e67e22', paddingBottom: '5px' }}>RIND / BULLE</h3>
-        
-        {items.map(item => (
-          <div key={item.id} style={{ 
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-            background: '#161b22', padding: '15px', borderRadius: '10px', marginBottom: '10px' 
+        <div style={{ backgroundColor: '#161b22', padding: '12px 20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', marginBottom: '20px', border: '1px solid #30363d' }}>
+          <span>👤 Max Bauer GmbH</span>
+          <span style={{ color: '#2ecc71' }}>ADIM 2/2</span>
+        </div>
+
+        <h4 style={{ color: '#e67e22', borderBottom: '1px solid #e67e22', paddingBottom: '5px', fontSize: '12px', marginBottom: '15px' }}>RIND / BULLE</h4>
+
+        {PRODUCTS.map(p => (
+          <div key={p.id} style={{ 
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            backgroundColor: '#161b22', padding: '12px 20px', borderRadius: '8px', marginBottom: '8px',
+            border: quantities[p.id] > 0 ? '1px solid #2ecc71' : '1px solid transparent'
           }}>
-            <span>{item.name}</span>
+            <span style={{ fontSize: '14px' }}>{p.name}</span>
             <input 
               type="number" 
-              style={{ width: '60px', padding: '5px', borderRadius: '5px' }}
-              onChange={(e) => setQuantities({ ...quantities, [item.id]: e.target.value })}
+              value={quantities[p.id] || 0}
+              onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
+              style={{ width: '50px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', textAlign: 'center', borderRadius: '4px', padding: '5px' }}
             />
           </div>
         ))}
       </div>
 
-      {/* Sağ Sepet Paneli */}
-      <div style={{ width: '300px', background: '#161b22', padding: '20px', borderLeft: '1px solid #30363d' }}>
-        <h4 style={{ marginBottom: '20px' }}>🛒 Sipariş Özeti</h4>
-        {items.filter(i => quantities[i.id] > 0).map(i => (
-          <div key={i.id} style={{ background: '#0d1117', padding: '10px', borderRadius: '8px', marginBottom: '10px', borderLeft: '4px solid #e67e22' }}>
-            {i.name} - {quantities[i.id]} kg
-          </div>
-        ))}
-        <button style={{ width: '100%', padding: '15px', background: '#2ecc71', border: 'none', borderRadius: '10px', marginTop: '20px', fontWeight: 'bold' }}>
+      {/* SAĞ SEPET (image_584e.jpg stili) */}
+      <div style={{ width: '280px', padding: '20px', borderLeft: '1px solid #161b22' }}>
+        <div style={{ fontSize: '14px', marginBottom: '15px' }}>🛒 Sipariş Özeti</div>
+        <div style={{ minHeight: '150px' }}>
+          {activeItems.map(item => (
+            <div key={item.id} style={{ backgroundColor: '#161b22', padding: '10px', borderRadius: '8px', marginBottom: '8px', borderLeft: '4px solid #e67e22' }}>
+              <div style={{ fontSize: '12px' }}>{item.name}</div>
+              <div style={{ fontSize: '11px', color: '#8b949e' }}>{quantities[item.id]} kg</div>
+            </div>
+          ))}
+        </div>
+
+        <textarea 
+          placeholder="Teslimat Notu..."
+          style={{ width: '100%', height: '80px', backgroundColor: '#161b22', border: '1px solid #30363d', borderRadius: '8px', color: 'white', padding: '10px', marginTop: '20px', resize: 'none' }}
+        />
+
+        <button style={{ width: '100%', padding: '15px', backgroundColor: '#2ecc71', color: '#0b1118', border: 'none', borderRadius: '10px', fontWeight: 'bold', marginTop: '15px', cursor: 'pointer' }}>
           Siparişi Tamamla
         </button>
       </div>
 
     </div>
   );
-};
-
-export default App;
+}
