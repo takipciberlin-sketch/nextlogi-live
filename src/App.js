@@ -1,128 +1,84 @@
-// App.js içeriğini bununla değiştir Kaptan!
 import React, { useState } from 'react';
-import { Bell, Lock, CheckCircle, FileText, Smartphone, ShieldCheck, Download, Loader2 } from 'lucide-react';
+import { Truck, Users, PieChart, ShieldCheck, ChevronRight, LogOut, Bell } from 'lucide-react';
 
-export default function NextLogiUltimate() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isSealed, setIsSealed] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [showReport, setShowReport] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: 'Kritik Uyarı', text: 'Tüm PRO modüller aktif. Ödeme bekliyor.', type: 'warning' }
-  ]);
+const NextLogiDashboard = () => {
+  const [activePanel, setActivePanel] = useState('dashboard');
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
-  const modules = [
-    { name: 'Lojistik Operasyon', price: 150 },
-    { name: 'Sürücü Mobil App', price: 350 },
-    { name: 'Finans Yönetimi', price: 245 },
-    { name: 'Gelişmiş PDF Raporlama', price: 100 }
+  const panels = [
+    { id: 'lojistik', title: 'Lojistik Operasyon', icon: <Truck size={24} />, color: 'bg-blue-600', desc: 'Sevkiyat ve mühürleme yönetimi' },
+    { id: 'surucu', title: 'Sürücü Mobil App', icon: <Users size={24} />, color: 'bg-emerald-600', desc: 'Sürücü takibi ve belge kontrolü' },
+    { id: 'finans', title: 'Finans Yönetimi', icon: <PieChart size={24} />, color: 'bg-purple-600', desc: 'Taahhüt ve ödeme dengesi' }
   ];
 
-  const total = modules.reduce((acc, curr) => acc + curr.price, 0);
-
-  const handleSealAction = () => {
-    setIsGenerating(true);
-    // Rapor üretme simülasyonu (2 saniye)
-    setTimeout(() => {
-      setIsGenerating(false);
-      setIsSealed(true);
-      setShowReport(true);
-      setNotifications([
-        { id: 2, title: 'Mühür Basıldı & Rapor Hazır', text: '€845.00 tahsil edildi. Rapor telefonunuza indirildi.', type: 'success' },
-        ...notifications
-      ]);
-    }, 2000);
-  };
-
-  if (!isLoggedIn) {
-    return (
-      <div style={{ backgroundColor: '#0a0a0a', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontFamily: 'sans-serif', padding: '20px' }}>
-        <div style={{ backgroundColor: '#111', padding: '40px', borderRadius: '20px', textAlign: 'center', width: '100%', maxWidth: '400px', border: '1px solid #333' }}>
-          <div style={{ background: '#00d4ff', width: '60px', height: '60px', borderRadius: '15px', margin: '0 auto 20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <ShieldCheck size={35} color="#000" />
-          </div>
-          <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>NextLogi 3.0 PRO</h1>
-          <p style={{ color: '#888', fontSize: '14px' }}>Güvenli Mobil Giriş Portalı</p>
-          <div style={{ marginTop: '30px', textAlign: 'left' }}>
-            <label style={{ fontSize: '12px', color: '#666' }}>KURUMSAL E-POSTA</label>
-            <input type="email" readOnly value="ocak1970@hotmail.com" style={{ width: '100%', padding: '12px', marginTop: '5px', borderRadius: '8px', border: '1px solid #222', background: '#000', color: '#fff' }} />
-          </div>
-          <button onClick={() => setIsLoggedIn(true)} style={{ width: '100%', marginTop: '20px', padding: '15px', borderRadius: '10px', background: '#00d4ff', color: '#000', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>
-            Sistemi Başlat
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (!isLoggedIn) return <div>Lütfen Giriş Yapın...</div>;
 
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh', color: 'white', fontFamily: 'sans-serif', paddingBottom: '80px' }}>
+    <div className="min-h-screen bg-black text-white font-sans">
       {/* Üst Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px', borderBottom: '1px solid #222', position: 'sticky', top: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)' }}>
-        <span style={{ fontWeight: 'bold', letterSpacing: '2px' }}>NEXTLOGI <span style={{ color: '#00d4ff' }}>PRO</span></span>
-        <div style={{ position: 'relative' }}>
-          <Bell size={24} color={isSealed ? '#00ff88' : '#ff4d4d'} />
-          <span style={{ position: 'absolute', top: -5, right: -5, background: isSealed ? '#00ff88' : '#ff4d4d', color: '#000', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold' }}>{notifications.length}</span>
-        </div>
-      </div>
-
-      <div style={{ padding: '20px' }}>
-        {/* Durum Kartı */}
-        <div style={{ background: 'linear-gradient(145deg, #111, #050505)', padding: '25px', borderRadius: '20px', border: '1px solid #222', marginBottom: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <h3 style={{ margin: 0, color: '#888', fontSize: '14px' }}>AYLIK TAAHHÜT</h3>
-              <h2 style={{ margin: '5px 0', fontSize: '32px' }}>€{total}.00</h2>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <span style={{ padding: '5px 12px', borderRadius: '20px', background: isSealed ? '#00ff8822' : '#ff4d4d22', color: isSealed ? '#00ff88' : '#ff4d4d', fontSize: '12px', fontWeight: 'bold' }}>
-                {isSealed ? 'MÜHÜRLENDİ' : 'ÖDEME BEKLİYOR'}
-              </span>
-            </div>
+      <nav className="border-b border-gray-800 p-4 flex justify-between items-center bg-black sticky top-0 z-50">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActivePanel('dashboard')}>
+          <div className="bg-cyan-500 p-1 rounded">
+            <ShieldCheck size={20} className="text-black" />
           </div>
-
-          <div style={{ marginTop: '20px' }}>
-            {modules.map(m => (
-              <div key={m.name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', padding: '8px 0', borderBottom: '1px solid #1a1a1a' }}>
-                <span style={{ color: '#ccc' }}>{m.name}</span>
-                <span style={{ color: '#00ff88' }}>● Aktif</span>
-              </div>
-            ))}
-          </div>
-
-          <button 
-            onClick={handleSealAction}
-            disabled={isSealed || isGenerating}
-            style={{ width: '100%', marginTop: '25px', padding: '18px', borderRadius: '12px', background: isSealed ? '#222' : '#00ff88', color: '#000', border: 'none', fontWeight: 'bold', fontSize: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-            {isGenerating ? <><Loader2 className="animate-spin" size={20} /> RAPOR ÜRETİLİYOR...</> : 
-             isSealed ? <><CheckCircle size={20} /> İŞLEM TAMAMLANDI</> : 
-             <><Lock size={20} /> SİSTEMİ MÜHÜRLE & RAPOR AL</>}
-          </button>
+          <span className="font-bold text-xl tracking-tight text-cyan-400">NEXTLOGI <span className="text-white">PRO</span></span>
         </div>
+        <div className="flex items-center gap-4">
+          <Bell size={20} className="text-gray-400 hover:text-white cursor-pointer" />
+          <div className="h-8 w-8 bg-gray-800 rounded-full flex items-center justify-center text-xs font-bold border border-gray-700">KP</div>
+        </div>
+      </nav>
 
-        {/* Dinamik Rapor Kartı (Sadece Mühürden Sonra Görünür) */}
-        {showReport && (
-          <div style={{ background: '#00d4ff11', border: '1px border #00d4ff', padding: '20px', borderRadius: '20px', animation: 'slideUp 0.5s ease' }}>
-            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-              <div style={{ background: '#00d4ff', padding: '10px', borderRadius: '10px' }}>
-                <FileText color="#000" />
+      <div className="max-w-6xl mx-auto p-6">
+        {activePanel === 'dashboard' ? (
+          <>
+            <header className="mb-10">
+              <h1 className="text-3xl font-bold mb-2">Hoş geldin, Kaptan 🫡</h1>
+              <p className="text-gray-400">Yönetmek istediğin paneli seçerek operasyona başla.</p>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {panels.map((panel) => (
+                <div 
+                  key={panel.id}
+                  onClick={() => setActivePanel(panel.id)}
+                  className="group bg-gray-900 border border-gray-800 p-6 rounded-2xl hover:border-cyan-500/50 transition-all cursor-pointer hover:transform hover:-translate-y-1"
+                >
+                  <div className={`${panel.color} w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    {panel.icon}
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{panel.title}</h3>
+                  <p className="text-sm text-gray-500 mb-4">{panel.desc}</p>
+                  <div className="flex items-center text-cyan-400 text-sm font-medium">
+                    Paneli Aç <ChevronRight size={16} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <button 
+              onClick={() => setActivePanel('dashboard')}
+              className="mb-6 text-gray-400 hover:text-white flex items-center gap-2 text-sm transition-colors"
+            >
+              ← Ana Menüye Dön
+            </button>
+            <div className="bg-gray-900 border border-gray-800 rounded-3xl p-12 text-center">
+              <div className="inline-flex p-4 rounded-full bg-cyan-500/10 text-cyan-400 mb-6">
+                {panels.find(p => p.id === activePanel)?.icon}
               </div>
-              <div>
-                <h4 style={{ margin: 0 }}>Operasyon Raporu.pdf</h4>
-                <p style={{ margin: 0, fontSize: '12px', color: '#00d4ff' }}>Başarıyla indirildi (1.2 MB)</p>
+              <h2 className="text-3xl font-bold mb-4">{panels.find(p => p.id === activePanel)?.title}</h2>
+              <p className="text-gray-400 mb-8">Bu panel şu an canlı veri akışına hazırlanıyor...</p>
+              <div className="inline-block px-6 py-2 bg-gray-800 rounded-full text-xs font-mono text-cyan-400 uppercase tracking-widest border border-cyan-500/20">
+                Sistem Aktif • Veri Bekleniyor
               </div>
-              <Download size={20} style={{ marginLeft: 'auto', color: '#00d4ff' }} />
             </div>
           </div>
         )}
       </div>
-
-      {/* Alt Uyarı Barı */}
-      {!isSealed && (
-        <div style={{ position: 'fixed', bottom: 0, width: '100%', background: '#ff4d4d', color: '#fff', padding: '15px', textAlign: 'center', fontSize: '13px', fontWeight: 'bold' }}>
-          ⚠️ SİSTEM KISITLANMAK ÜZERE: Lütfen mühürleme işlemini tamamlayın.
-        </div>
-      )}
     </div>
   );
-}
+};
+
+export default NextLogiDashboard;
