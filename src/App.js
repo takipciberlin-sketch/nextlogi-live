@@ -1,61 +1,90 @@
 import React, { useState } from "react";
 
-// Ürünleri ve kategorileri bileşenin DIŞINA alıyoruz (Hafıza dostu)
-const CATEGORIES = [
-  { id: 'rind', name: 'Rind/Bulle', color: '#e67e22' },
-  { id: 'hahn', name: 'Hähnchen', color: '#f1c40f' },
-  { id: 'kalb', name: 'Kalb', color: '#3498db' }
-];
-
-const PRODUCTS = [
-  { id: 1, name: "Bullen-Vorderviertel ohne Knochen", cat: 'rind' },
-  { id: 2, name: "Bullen-Keule mit Knochen", cat: 'rind' },
-  { id: 3, name: "Rinder-Nacken", cat: 'rind' },
-  { id: 7, name: "Hähnchen-Brustfilet", cat: 'hahn' },
-  { id: 11, name: "Kalbs-Schnitzel", cat: 'kalb' }
-];
-
-function NextLogi() {
+export default function NextLogiFixed() {
   const [quantities, setQuantities] = useState({});
 
-  // Eğer sayfa render edilemiyorsa, basit bir 'Loading' kontrolü ekliyoruz
-  if (!PRODUCTS) return <div style={{color: 'white'}}>Yükleniyor...</div>;
+  // Sabit Ürün Listesi
+  const PRODUCTS = [
+    { id: 1, name: "Bullen-Vorderviertel ohne Knochen" },
+    { id: 2, name: "Bullen-Keule mit Knochen" },
+    { id: 3, name: "Rinder-Nacken" },
+    { id: 4, name: "Bullen-Bug" },
+    { id: 5, name: "Hähnchen-Brustfilet" },
+    { id: 6, name: "Kalbs-Schnitzel" }
+  ];
+
+  const activeItems = PRODUCTS.filter(p => Number(quantities[p.id]) > 0);
 
   return (
-    <div style={{ background: '#0d1117', color: 'white', minHeight: '100vh', padding: '20px' }}>
-       <h1 style={{color: '#2ecc71'}}>NEXTLOGI AKTİF</h1>
-       <div style={{ display: 'flex', gap: '20px' }}>
-          {/* Ürün Listesi */}
-          <div style={{ flex: 1 }}>
-            {CATEGORIES.map(cat => (
-              <div key={cat.id} style={{ marginBottom: '20px' }}>
-                <h3 style={{ color: cat.color, borderBottom: `1px solid ${cat.color}` }}>{cat.name}</h3>
-                {PRODUCTS.filter(p => p.cat === cat.id).map(p => (
-                  <div key={p.id} style={{ background: '#161b22', padding: '10px', marginBottom: '5px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>{p.name}</span>
-                    <input 
-                      type="number" 
-                      style={{ width: '50px' }} 
-                      onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})} 
-                    />
-                  </div>
-                ))}
-              </div>
-            ))}
+    <div style={{ display: 'flex', backgroundColor: '#090d11', color: '#c9d1d9', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+      
+      {/* SOL MENÜ */}
+      <div style={{ width: '200px', padding: '20px', borderRight: '1px solid #161b22' }}>
+        <h3 style={{ color: '#2ecc71', fontSize: '18px', marginBottom: '30px' }}>NEXTLOGI</h3>
+        <div style={{ backgroundColor: '#1a3a2a', color: '#4ade80', padding: '12px', borderRadius: '8px', marginBottom: '10px', fontSize: '14px', fontWeight: 'bold' }}>
+          Ürünler & Sipariş
+        </div>
+        <div style={{ color: '#8b949e', padding: '12px', fontSize: '14px', cursor: 'pointer' }}>Müşteriler</div>
+      </div>
+
+      {/* ANA PANEL (ORTA) */}
+      <div style={{ flex: 1, padding: '20px' }}>
+        {/* Kullanıcı Bilgi Çubuğu */}
+        <div style={{ backgroundColor: '#161b22', padding: '15px 20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', marginBottom: '25px', border: '1px solid #30363d' }}>
+          <span style={{ fontSize: '14px' }}>👤 Max Bauer GmbH</span>
+          <span style={{ color: '#2ecc71', fontSize: '13px', fontWeight: 'bold' }}>ADIM 2/2</span>
+        </div>
+
+        {/* Kategori Başlığı */}
+        <div style={{ marginBottom: '20px' }}>
+          <h4 style={{ color: '#e67e22', fontSize: '12px', marginBottom: '5px' }}>RIND / BULLE</h4>
+          <div style={{ height: '1px', backgroundColor: '#e67e22', width: '100%' }}></div>
+        </div>
+
+        {/* Ürün Listesi */}
+        {PRODUCTS.map(p => (
+          <div key={p.id} style={{ 
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            backgroundColor: '#161b22', padding: '15px 20px', borderRadius: '8px', marginBottom: '10px',
+            border: quantities[p.id] > 0 ? '1px solid #2ecc71' : '1px solid transparent'
+          }}>
+            <span style={{ fontSize: '14px' }}>{p.name}</span>
+            <input 
+              type="number" 
+              value={quantities[p.id] || 0}
+              onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
+              style={{ width: '60px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', textAlign: 'center', borderRadius: '4px', padding: '8px', fontSize: '14px' }}
+            />
           </div>
-          
-          {/* Sağ Panel */}
-          <div style={{ width: '250px', background: '#161b22', padding: '15px', borderRadius: '15px' }}>
-            <h4>Sipariş Özeti</h4>
-            {PRODUCTS.filter(p => quantities[p.id] > 0).map(p => (
-              <div key={p.id} style={{fontSize: '12px', borderLeft: '2px solid orange', paddingLeft: '5px', marginBottom: '5px'}}>
-                {p.name} - {quantities[p.id]} kg
-              </div>
-            ))}
-          </div>
-       </div>
+        ))}
+      </div>
+
+      {/* SAĞ PANEL (SİPARİŞ ÖZETİ) */}
+      <div style={{ width: '320px', padding: '20px', borderLeft: '1px solid #161b22', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', fontSize: '14px' }}>
+          <span>🛒</span> <strong>Sipariş Özeti</strong>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          {activeItems.map(item => (
+            <div key={item.id} style={{ backgroundColor: '#161b22', padding: '12px', borderRadius: '10px', marginBottom: '10px', borderLeft: '4px solid #e67e22' }}>
+              <div style={{ fontSize: '12px', fontWeight: 'bold' }}>{item.name}</div>
+              <div style={{ fontSize: '11px', color: '#8b949e', marginTop: '4px' }}>{quantities[item.id]} kg</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: '20px' }}>
+          <textarea 
+            placeholder="Teslimat Notu..."
+            style={{ width: '100%', height: '100px', backgroundColor: '#161b22', border: '1px solid #30363d', borderRadius: '8px', color: 'white', padding: '12px', resize: 'none', fontSize: '13px' }}
+          />
+          <button style={{ width: '100%', padding: '15px', backgroundColor: '#2ecc71', color: '#090d11', border: 'none', borderRadius: '10px', fontWeight: 'bold', fontSize: '15px', marginTop: '15px', cursor: 'pointer' }}>
+            Siparişi Tamamla
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }
-
-export default NextLogi;
