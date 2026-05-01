@@ -1,96 +1,127 @@
 import React, { useState } from "react";
 
 const CUSTOMERS = [
-  { id: "C1", name: "Döner Point", city: "Hamburg" },
-  { id: "C2", name: "Berlin Grillhaus", city: "Berlin" }
+  { id: "C1", name: "Döner Point", city: "Hamburg", color: "#3b82f6" },
+  { id: "C2", name: "Berlin Grillhaus", city: "Berlin", color: "#a855f7" }
 ];
 
 const PRODUCTS = [
-  { id: 1, name: "Kalb Döner 10kg", unit: "Spieß" },
-  { id: 2, name: "Hähnchen Döner 5kg", unit: "Spieß" },
-  { id: 3, name: "Sucuk (Kangal)", unit: "Kg" }
+  { id: 1, name: "Kalb Döner 10kg", unit: "Spieß", price: 85 },
+  { id: 2, name: "Hähnchen Döner 5kg", unit: "Spieß", price: 45 },
+  { id: 3, name: "Sucuk (Kangal)", unit: "Kg", price: 12 }
 ];
 
-export default function NextLogiFinal() {
+export default function NextLogiUltra() {
   const [step, setStep] = useState("customer");
   const [selectedCust, setSelectedCust] = useState(null);
   const [quantities, setQuantities] = useState({});
-  const [showSuccess, setShowSuccess] = useState(false); // Sonuç ekranı kontrolü
-  const [orderId, setOrderId] = useState("");
+  const [showResult, setShowResult] = useState(false);
 
   const cartItems = PRODUCTS.filter(p => quantities[p.id] > 0);
+  const totalWeight = cartItems.reduce((sum, item) => sum + Number(quantities[item.id]), 0);
 
-  // SİPARİŞİ TAMAMLA BUTONUNA BASINCA ÇALIŞAN FONKSİYON
-  const handlePlaceOrder = () => {
-    const randomId = "ORD-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-    setOrderId(randomId); // Rastgele sipariş kodu üret
-    setShowSuccess(true); // Sonuç ekranını göster[cite: 1]
-  };
-
+  // 1. ADIM: MÜŞTERİ SEÇİMİ (Şık Kartlar)
   if (step === "customer") {
     return (
-      <div style={{ backgroundColor: '#0d1117', color: 'white', minHeight: '100vh', padding: '40px' }}>
-        <h1 style={{ fontStyle: 'italic', fontWeight: '900', color: '#2563eb' }}>NEXTLOGI v20</h1>
-        {CUSTOMERS.map(c => (
-          <div key={c.id} onClick={() => { setSelectedCust(c); setStep("order"); }} style={{ backgroundColor: '#161b22', padding: '20px', borderRadius: '20px', marginTop: '15px', cursor: 'pointer', border: '1px solid #30363d' }}>
-            {c.name} - {c.city}
-          </div>
-        ))}
+      <div style={{ backgroundColor: '#05070a', color: 'white', minHeight: '100vh', padding: '60px 20px', fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '900', fontStyle: 'italic', letterSpacing: '-2px', marginBottom: '40px' }}>
+            NEXTLOGI <span style={{ color: '#3b82f6' }}>v20</span>
+          </h1>
+          {CUSTOMERS.map(c => (
+            <div 
+              key={c.id} 
+              onClick={() => { setSelectedCust(c); setStep("order"); }}
+              style={{ backgroundColor: '#0f172a', padding: '30px', borderRadius: '24px', marginBottom: '20px', cursor: 'pointer', border: '1px solid #1e293b', transition: '0.3s' }}
+              onMouseEnter={(e) => e.currentTarget.style.borderColor = c.color}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#1e293b'}
+            >
+              <div style={{ fontSize: '20px', fontWeight: '800' }}>{c.name}</div>
+              <div style={{ fontSize: '14px', color: '#64748b', marginTop: '5px' }}>{c.city} • Bölge: Kuzey</div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
+  // 2. ADIM: KATALOG VE CANLI SEPET
   return (
-    <div style={{ backgroundColor: '#0d1117', color: 'white', minHeight: '100vh', display: 'flex' }}>
-      {/* Ürün Listesi */}
-      <div style={{ flex: 1, padding: '30px', borderRight: '1px solid #30363d' }}>
-        <h2 style={{ fontSize: '2rem' }}>{selectedCust?.name}</h2>
+    <div style={{ backgroundColor: '#05070a', color: 'white', minHeight: '100vh', display: 'flex', fontFamily: 'Inter, sans-serif' }}>
+      {/* Ürün Katalog */}
+      <div style={{ flex: 1, padding: '40px', borderRight: '1px solid #1e293b' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
+          <button onClick={() => setStep("customer")} style={{ background: '#0f172a', border: '1px solid #1e293b', color: 'white', padding: '12px', borderRadius: '15px', cursor: 'pointer' }}>←</button>
+          <h2 style={{ fontSize: '24px', fontWeight: '900' }}>{selectedCust?.name}</h2>
+        </div>
+
         {PRODUCTS.map(p => (
-          <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '20px', backgroundColor: '#161b22', marginBottom: '10px', borderRadius: '20px' }}>
-            <span>{p.name}</span>
-            <input 
-              type="number" 
-              value={quantities[p.id] || ""} 
-              onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
-              style={{ width: '80px', backgroundColor: '#0d1117', color: 'white', border: '1px solid #2563eb', textAlign: 'center' }}
-            />
+          <div key={p.id} style={{ 
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '25px', 
+            backgroundColor: quantities[p.id] > 0 ? '#0f172a' : '#0a0f1a', 
+            marginBottom: '15px', borderRadius: '25px', border: quantities[p.id] > 0 ? '1px solid #3b82f6' : '1px solid #1e293b' 
+          }}>
+            <span style={{ fontWeight: '700', fontSize: '18px' }}>{p.name}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <input 
+                type="number" 
+                placeholder="0"
+                value={quantities[p.id] || ""} 
+                onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
+                style={{ width: '100px', backgroundColor: '#05070a', color: '#3b82f6', border: '2px solid #1e293b', borderRadius: '15px', padding: '12px', textAlign: 'center', fontSize: '18px', fontWeight: 'bold', outline: 'none' }}
+              />
+              <span style={{ color: '#475569', fontWeight: 'bold' }}>{p.unit}</span>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Sağ Panel: Sepet Özet */}
-      <div style={{ width: '350px', padding: '30px', display: 'flex', flexDirection: 'column' }}>
-        <h3>SİPARİŞ ÖZETİ</h3>
-        <div style={{ flex: 1 }}>
+      {/* Sağ Panel: Sepet ve Aksiyon */}
+      <div style={{ width: '400px', padding: '40px', background: 'linear-gradient(180deg, #05070a 0%, #0f172a 100%)', display: 'flex', flexDirection: 'column' }}>
+        <h3 style={{ fontSize: '12px', fontWeight: '900', letterSpacing: '2px', color: '#64748b', marginBottom: '30px' }}>SİPARİŞ ÖZETİ</h3>
+        
+        <div style={{ flex: 1, overflowY: 'auto' }}>
           {cartItems.map(item => (
-            <div key={item.id} style={{ padding: '10px', borderBottom: '1px solid #333' }}>
-              {item.name}: {quantities[item.id]} {item.unit}[cite: 1]
+            <div key={item.id} style={{ padding: '20px', backgroundColor: '#0a0f1a', borderRadius: '20px', marginBottom: '10px', border: '1px solid #1e293b' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{item.name}</div>
+              <div style={{ color: '#3b82f6', fontSize: '18px', fontWeight: '900', marginTop: '5px' }}>{quantities[item.id]} {item.unit}</div>
             </div>
           ))}
         </div>
-        
-        {/* TAMAMLA BUTONU - handlePlaceOrder fonksiyonuna bağlı[cite: 1] */}
+
+        <div style={{ borderTop: '1px solid #1e293b', paddingTop: '20px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#64748b' }}>
+            <span>Toplam Miktar</span>
+            <span style={{ color: 'white', fontWeight: 'bold' }}>{totalWeight} Birim</span>
+          </div>
+        </div>
+
         <button 
-          onClick={handlePlaceOrder}
+          onClick={() => setShowResult(true)}
           disabled={cartItems.length === 0}
-          style={{ width: '100%', padding: '20px', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}
+          style={{ 
+            width: '100%', padding: '25px', backgroundColor: cartItems.length > 0 ? '#3b82f6' : '#1e293b', 
+            color: 'white', border: 'none', borderRadius: '24px', fontWeight: '900', fontSize: '16px', 
+            cursor: 'pointer', transition: '0.3s', boxShadow: cartItems.length > 0 ? '0 10px 30px rgba(59, 130, 246, 0.3)' : 'none' 
+          }}
         >
-          SİPARİŞİ TAMAMLA
+          SİPARİŞİ ONAYLA
         </button>
       </div>
 
-      {/* ✅ SONUÇ EKRANI (MODAL)[cite: 1] */}
-      {showSuccess && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ backgroundColor: '#161b22', padding: '50px', borderRadius: '30px', textAlign: 'center', border: '1px solid #238636' }}>
-            <div style={{ fontSize: '50px' }}>✅</div>
-            <h2 style={{ fontWeight: '900' }}>BAŞARILI!</h2>
-            <p style={{ color: '#8b949e' }}>Sipariş No: {orderId}</p>[cite: 1]
+      {/* ✅ SONUÇ EKRANI (Daha Estetik Modal) */}
+      {showResult && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(10px)' }}>
+          <div style={{ backgroundColor: '#0f172a', padding: '60px', borderRadius: '40px', textAlign: 'center', border: '2px solid #3b82f6', maxWidth: '450px', width: '90%' }}>
+            <div style={{ fontSize: '80px', marginBottom: '20px' }}>🚀</div>
+            <h2 style={{ fontSize: '32px', fontWeight: '900', color: 'white', marginBottom: '10px' }}>SİPARİŞ YOLDA!</h2>
+            <p style={{ color: '#64748b', fontSize: '16px', marginBottom: '30px' }}>Müşteri: <b>{selectedCust?.name}</b><br/>Sistem kaydı başarıyla oluşturuldu.</p>
+            
             <button 
-              onClick={() => { setShowSuccess(false); setQuantities({}); setStep("customer"); }}
-              style={{ marginTop: '20px', padding: '15px 30px', backgroundColor: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+              onClick={() => { setShowResult(false); setStep("customer"); setQuantities({}); }}
+              style={{ width: '100%', padding: '20px', backgroundColor: 'white', color: 'black', borderRadius: '20px', fontWeight: '900', border: 'none', cursor: 'pointer' }}
             >
-              YAPTIĞIMIZ İŞLEMİ KAPAT
+              YENİ SİPARİŞE GEÇ
             </button>
           </div>
         </div>
