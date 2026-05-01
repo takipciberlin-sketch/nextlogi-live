@@ -1,58 +1,66 @@
 import React, { useState, useEffect } from "react";
 
-export default function NextLogiFullFix() {
-  // PDF'den gelen tam liste
+export default function NextLogiKategoriEkleme() {
   const initialInventory = [
     { id: 1, name: "Bullen-Vorderviertel ohne Knochen", cat: "Rind/Bulle", unit: "kg" },
     { id: 2, name: "Bullen-Keule mit Knochen", cat: "Rind/Bulle", unit: "kg" },
-    { id: 3, name: "Rinder-Nacken", cat: "Rind/Bulle", unit: "kg" },
     { id: 31, name: "Hähnchen-Keule mit Knochen", cat: "Hähnchen", unit: "kg" },
-    { id: 48, name: "KalbsSchwanz", cat: "Kalb", unit: "kg" },
-    { id: 54, name: "Puten-Flügel-Fleisch", cat: "Pute", unit: "kg" },
-    { id: 60, name: "Gemüscht Häckfleisch", cat: "Verarbeitet", unit: "kg" }
+    { id: 54, name: "Puten-Flügel-Fleisch", cat: "Pute", unit: "kg" }
   ];
 
   const [products, setProducts] = useState(() => {
-    const saved = localStorage.getItem("nl_inv_v3");
+    const saved = localStorage.getItem("nl_inv_v4");
     return saved ? JSON.parse(saved) : initialInventory;
   });
 
+  const [categories, setCategories] = useState(() => {
+    const saved = localStorage.getItem("nl_cats_v4");
+    return saved ? JSON.parse(saved) : ["Rind/Bulle", "Hähnchen", "Kalb", "Lamm", "Pute", "Geflügel", "Verarbeitet"];
+  });
+
   const [quantities, setQuantities] = useState(() => {
-    const saved = localStorage.getItem("nl_qty_v3");
+    const saved = localStorage.getItem("nl_qty_v4");
     return saved ? JSON.parse(saved) : {};
   });
 
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+  const [isAddingNewCat, setIsAddingNewCat] = useState(false); // Yeni kategori modu
+  const [newCatName, setNewCatName] = useState(""); // Yeni kategori inputu
   const [formData, setFormData] = useState({ name: "", cat: "Rind/Bulle", unit: "kg" });
 
   useEffect(() => {
-    localStorage.setItem("nl_inv_v3", JSON.stringify(products));
-    localStorage.setItem("nl_qty_v3", JSON.stringify(quantities));
-  }, [products, quantities]);
+    localStorage.setItem("nl_inv_v4", JSON.stringify(products));
+    localStorage.setItem("nl_qty_v4", JSON.stringify(quantities));
+    localStorage.setItem("nl_cats_v4", JSON.stringify(categories));
+  }, [products, quantities, categories]);
 
   const handleSave = () => {
     if (!formData.name) return;
-    if (editingProduct) {
-      setProducts(products.map(p => p.id === editingProduct.id ? { ...formData, id: p.id } : p));
-    } else {
-      setProducts([...products, { ...formData, id: Date.now() }]);
-    }
+    setProducts([...products, { ...formData, id: Date.now() }]);
     closeModal();
+  };
+
+  const handleAddNewCategory = () => {
+    if (newCatName && !categories.includes(newCatName)) {
+      const updatedCats = [...categories, newCatName];
+      setCategories(updatedCats);
+      setFormData({ ...formData, cat: newCatName }); // Seçili kategoriyi yeni eklenen yap
+      setNewCatName("");
+      setIsAddingNewCat(false);
+    }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setEditingProduct(null);
-    setFormData({ name: "", cat: "Rind/Bulle", unit: "kg" });
+    setIsAddingNewCat(false);
+    setFormData({ name: "", cat: categories[0], unit: "kg" });
   };
 
   const filteredProducts = activeCategory === "ALL" 
     ? products 
     : products.filter(p => p.cat === activeCategory);
 
-  // SEPETTE GÖRÜNECEK ÜRÜNLER (Miktarı 0'dan büyük olanlar)
   const activeItems = products.filter(p => (quantities[p.id] || 0) > 0);
 
   return (
@@ -67,24 +75,19 @@ export default function NextLogiFullFix() {
       {/* MERKEZ LİSTE */}
       <div style={{ flex: 1, padding: '30px', overflowY: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            {["ALL", "Rind/Bulle", "Hähnchen", "Kalb", "Lamm", "Pute", "Geflügel", "Verarbeitet"].map(cat => (
-              <button key={cat} onClick={() => setActiveCategory(cat)} style={{
-                padding: '8px 16px', borderRadius: '20px', cursor: 'pointer',
-                backgroundColor: activeCategory === cat ? '#1a3a2a' : '#161b22',
-                color: activeCategory === cat ? '#4ade80' : '#8b949e',
-                border: activeCategory === cat ? '1px solid #2ecc71' : '1px solid #30363d'
-              }}>{cat}</button>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button onClick={() => setActiveCategory("ALL")} style={{ padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', backgroundColor: activeCategory === "ALL" ? '#1a3a2a' : '#161b22', color: activeCategory === "ALL" ? '#4ade80' : '#8b949e', border: activeCategory === "ALL" ? '1px solid #2ecc71' : '1px solid #30363d' }}>ALL</button>
+            {categories.map(cat => (
+              <button key={cat} onClick={() => setActiveCategory(cat)} style={{ padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', backgroundColor: activeCategory === cat ? '#1a3a2a' : '#161b22', color: activeCategory === cat ? '#4ade80' : '#8b949e', border: activeCategory === cat ? '1px solid #2ecc71' : '1px solid #30363d' }}>{cat}</button>
             ))}
           </div>
           <button onClick={() => setIsModalOpen(true)} style={{ backgroundColor: '#2ecc71', color: '#090d11', border: 'none', padding: '12px 24px', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer' }}>+ ÜRÜN EKLE</button>
         </div>
 
         {filteredProducts.map(p => (
-          <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#161b22', padding: '16px 20px', borderRadius: '12px', marginBottom: '10px', border: quantities[p.id] > 0 ? '1px solid #2ecc71' : '1px solid transparent' }}>
+          <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#161b22', padding: '16px 20px', borderRadius: '12px', marginBottom: '10px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              {/* DÜZENLEME BUTONU */}
-              <button onClick={() => { setEditingProduct(p); setFormData(p); setIsModalOpen(true); }} style={{ backgroundColor: '#30363d', color: '#8b949e', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '11px' }}>Düzenle</button>
+              <button style={{ backgroundColor: '#30363d', color: '#8b949e', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'default', fontSize: '11px' }}>Düzenle</button>
               <div>
                 <div style={{ fontSize: '14px', fontWeight: '500' }}>{p.name}</div>
                 <div style={{ fontSize: '11px', color: '#8b949e' }}>{p.cat} • {p.unit}</div>
@@ -99,40 +102,52 @@ export default function NextLogiFullFix() {
         ))}
       </div>
 
-      {/* SAĞ PANEL - SEPET (GÜNCELLENDİ)[cite: 1] */}
+      {/* SAĞ PANEL - SEPET */}
       <div style={{ width: '340px', padding: '24px', backgroundColor: '#0d1117', borderLeft: '1px solid #161b22', display: 'flex', flexDirection: 'column' }}>
         <h3 style={{ fontSize: '18px', marginBottom: '24px' }}>🛒 Sipariş Özeti</h3>
         <div style={{ flex: 1, overflowY: 'auto' }}>
           {activeItems.map(item => (
             <div key={item.id} style={{ backgroundColor: '#161b22', padding: '16px', borderRadius: '12px', marginBottom: '10px', borderLeft: '4px solid #2ecc71' }}>
-              <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#f0f6fc' }}>{item.name}</div>
-              {/* Kategori ve Birim Eklendi[cite: 1] */}
-              <div style={{ fontSize: '12px', color: '#8b949e', marginTop: '4px' }}>
-                {item.cat} • {quantities[item.id]} {item.unit}
-              </div>
+              <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{item.name}</div>
+              <div style={{ fontSize: '12px', color: '#8b949e', marginTop: '4px' }}>{item.cat} • {quantities[item.id]} {item.unit}</div>
             </div>
           ))}
         </div>
-        {activeItems.length > 0 && (
-          <button onClick={() => alert("Sipariş Tamamlandı!")} style={{ width: '100%', padding: '16px', backgroundColor: '#2ecc71', color: '#090d11', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', marginTop: '20px' }}>
-            SİPARİŞİ TAMAMLA
-          </button>
-        )}
       </div>
 
-      {/* MODAL (ÜRÜN EKLE/DÜZENLE)[cite: 1] */}
+      {/* MODAL (YENİ KATEGORİ EKLEME ÖZELLİĞİ BURADA) */}
       {isModalOpen && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 100 }}>
-          <div style={{ backgroundColor: '#161b22', padding: '30px', borderRadius: '20px', width: '380px', border: '1px solid #30363d' }}>
-            <h3 style={{ marginTop: 0 }}>{editingProduct ? "Ürünü Düzenle" : "Yeni Ürün Ekle"}</h3>
-            <input placeholder="Ürün Adı" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} style={{ width: '100%', padding: '12px', marginBottom: '15px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', borderRadius: '8px' }} />
-            <select value={formData.cat} onChange={e => setFormData({...formData, cat: e.target.value})} style={{ width: '100%', padding: '12px', marginBottom: '15px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', borderRadius: '8px' }}>
-              {["Rind/Bulle", "Hähnchen", "Kalb", "Lamm", "Pute", "Geflügel", "Verarbeitet"].map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <input placeholder="Birim (kg, Adet, Koli)" value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} style={{ width: '100%', padding: '12px', marginBottom: '20px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', borderRadius: '8px' }} />
+          <div style={{ backgroundColor: '#161b22', padding: '30px', borderRadius: '20px', width: '400px', border: '1px solid #30363d' }}>
+            <h3 style={{ marginTop: 0 }}>Yeni Ürün Ekle</h3>
+            
+            <label style={{ fontSize: '12px', color: '#8b949e' }}>Ürün Adı</label>
+            <input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} style={{ width: '100%', padding: '12px', marginBottom: '15px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', borderRadius: '8px' }} />
+
+            <label style={{ fontSize: '12px', color: '#8b949e' }}>Kategori Seçin veya Ekleyin</label>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '15px' }}>
+              {!isAddingNewCat ? (
+                <>
+                  <select value={formData.cat} onChange={e => setFormData({...formData, cat: e.target.value})} style={{ flex: 1, padding: '12px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', borderRadius: '8px' }}>
+                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                  <button onClick={() => setIsAddingNewCat(true)} style={{ padding: '0 15px', backgroundColor: '#30363d', color: '#2ecc71', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>+ Yeni</button>
+                </>
+              ) : (
+                <>
+                  <input placeholder="Kategori Adı..." value={newCatName} onChange={e => setNewCatName(e.target.value)} style={{ flex: 1, padding: '12px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', borderRadius: '8px' }} />
+                  <button onClick={handleAddNewCategory} style={{ padding: '0 15px', backgroundColor: '#2ecc71', color: '#090d11', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Ekle</button>
+                  <button onClick={() => setIsAddingNewCat(false)} style={{ padding: '0 10px', backgroundColor: '#f85149', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>X</button>
+                </>
+              )}
+            </div>
+
+            <label style={{ fontSize: '12px', color: '#8b949e' }}>Birim (kg, Adet...)</label>
+            <input value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} style={{ width: '100%', padding: '12px', marginBottom: '20px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', borderRadius: '8px' }} />
+
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={closeModal} style={{ flex: 1, padding: '12px', borderRadius: '8px', border: 'none', cursor: 'pointer', backgroundColor: '#30363d', color: 'white' }}>İptal</button>
-              <button onClick={handleSave} style={{ flex: 1, padding: '12px', borderRadius: '8px', backgroundColor: '#2ecc71', color: '#090d11', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>Kaydet</button>
+              <button onClick={closeModal} style={{ flex: 1, padding: '12px', borderRadius: '8px', backgroundColor: '#30363d', color: 'white', border: 'none', cursor: 'pointer' }}>İptal</button>
+              <button onClick={handleSave} style={{ flex: 1, padding: '12px', borderRadius: '8px', backgroundColor: '#2ecc71', color: '#090d11', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>Ürünü Kaydet</button>
             </div>
           </div>
         </div>
