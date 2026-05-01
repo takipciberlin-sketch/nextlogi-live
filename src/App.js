@@ -1,77 +1,77 @@
+/**
+ * NEXTLOGI - MODÜL 4 (ŞOFÖR - ULTRA ERGONOMİK)
+ * Mantık: Maksimum görünürlük, dev butonlar.
+ */
 import React, { useState } from "react";
 
-/**
- * NEXTLOGI - MODÜL 4 (ŞOFÖR)
- * Mantık: Firma sahibinden gelen işi gör ve "Teslim Edildi" olarak işaretle.
- */
-export default function NextLogiDriverApp() {
-  // Firma sahibinden "Şoföre Ata" denilince buraya düşen hayali veri
-  const [myTasks, setMyTasks] = useState([
+export default function NextLogiDriverMegaButton() {
+  const [tasks, setTasks] = useState([
     { id: 101, customer: "Örnek Müşteri", items: "2kg Dana, 1kg Tavuk", status: "Yolda" }
   ]);
 
-  const handleDelivery = (id) => {
-    setMyTasks(myTasks.map(task => 
-      task.id === id ? { ...task, status: "Teslim Edildi" } : task
-    ));
-    alert("Sipariş başarıyla teslim edildi! Firma sahibine bilgi verildi.");
+  const completeJob = (id) => {
+    setTasks(tasks.filter(t => t.id !== id)); // Teslim edileni listeden kaldır (ekran temiz kalsın)
+    alert("Teslimat Tamamlandı!");
   };
 
+  if (tasks.length === 0) {
+    return (
+      <div style={{ backgroundColor: '#090d11', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b949e' }}>
+        <h2>Bekleyen İş Yok 👍</h2>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ backgroundColor: '#090d11', minHeight: '100vh', color: 'white', padding: '20px', fontFamily: 'sans-serif' }}>
-      <h2 style={{ color: '#2ecc71', textAlign: 'center' }}>Şoför Paneli</h2>
+    <div style={{ backgroundColor: '#090d11', minHeight: '100vh', color: 'white', padding: '10px', fontFamily: 'sans-serif' }}>
       
-      <p style={{ color: '#8b949e', textAlign: 'center', fontSize: '14px' }}>Bugünkü Teslimatların</p>
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h1 style={{ color: '#2ecc71', fontSize: '30px', margin: 0 }}>Şoför Paneli</h1>
+        <p style={{ color: '#8b949e' }}>Bugünkü Teslimatların</p>
+      </div>
 
-      {myTasks.map(task => (
+      {tasks.map(task => (
         <div key={task.id} style={{ 
-          backgroundColor: '#161b22', 
-          padding: '20px', 
-          borderRadius: '15px', 
-          marginTop: '20px', 
-          borderLeft: task.status === "Teslim Edildi" ? '5px solid #2ecc71' : '5px solid #f1c40f' 
+          backgroundColor: '#111418', 
+          borderRadius: '25px', 
+          padding: '30px', 
+          border: '2px solid #1c2128',
+          marginBottom: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          minHeight: '60vh' // Ekranın %60'ını kaplasın
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-            <span style={{ fontWeight: 'bold', fontSize: '18px' }}>{task.customer}</span>
-            <span style={{ 
-              fontSize: '12px', 
-              padding: '4px 8px', 
-              borderRadius: '5px', 
-              backgroundColor: task.status === "Teslim Edildi" ? '#238636' : '#9e6a03' 
-            }}>
-              {task.status}
-            </span>
-          </div>
-          
-          <div style={{ color: '#8b949e', marginBottom: '20px' }}>
-            {task.items}
+          {/* ÜST BİLGİ ALANI */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+               <h2 style={{ fontSize: '36px', margin: 0 }}>{task.customer}</h2>
+               <span style={{ backgroundColor: '#9e6a03', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold' }}>YOLDA</span>
+            </div>
+            <p style={{ fontSize: '24px', color: '#8b949e', marginTop: '20px' }}>{task.items}</p>
           </div>
 
-          {task.status !== "Teslim Edildi" && (
-            <button 
-              onClick={() => handleDelivery(task.id)}
-              style={{ 
-                width: '100%', 
-                padding: '15px', 
-                backgroundColor: '#2ecc71', 
-                color: '#090d11', 
-                border: 'none', 
-                borderRadius: '10px', 
-                fontWeight: 'bold',
-                fontSize: '16px'
-              }}
-            >
-              TESLİM ETTİM
-            </button>
-          )}
+          {/* İŞTE O ABARTILI BÜYÜK BUTON */}
+          <button 
+            onClick={() => completeJob(task.id)}
+            style={{ 
+              width: '100%', 
+              height: '150px', // Devasa yükseklik
+              backgroundColor: '#2ecc71', 
+              color: '#090d11', 
+              border: 'none', 
+              borderRadius: '20px', 
+              fontSize: '40px', // Devasa yazı
+              fontWeight: '900',
+              cursor: 'pointer',
+              boxShadow: '0 10px 30px rgba(46, 204, 113, 0.3)',
+              textTransform: 'uppercase'
+            }}
+          >
+            TESLİM ETTİM
+          </button>
         </div>
       ))}
-
-      {myTasks.filter(t => t.status === "Teslim Edildi").length > 0 && (
-        <div style={{ textAlign: 'center', marginTop: '30px', color: '#8b949e', fontSize: '12px' }}>
-          ✓ Tamamlanan teslimatlar arşive taşındı.
-        </div>
-      )}
     </div>
   );
 }
