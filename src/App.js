@@ -1,48 +1,55 @@
 import React, { useState } from 'react';
 import { 
   LayoutGrid, ShoppingBag, Search, ShoppingCart, 
-  ArrowLeft, Package, UserCircle, Settings,
-  ChevronLeft, X, Fuel, CreditCard, Plus, Minus
+  UserCircle, X, Plus, Minus
 } from 'lucide-react';
 
-// --- TASARIM SİSTEMİ (Style Guide) ---
-// Görseldeki (image_578a00.png) değerlerin dondurulmuş hali
 const THEME = {
   colors: {
     bgMain: '#0d1117',
     bgCard: '#161b22',
-    primary: '#00df82', // Neon Yeşil
-    secondary: '#f97316', // Turuncu
+    primary: '#00df82', 
+    secondary: '#f97316',
     textMain: '#e1e1e3',
-    textMuted: '#484f58',
-    danger: '#ef4444'
-  },
-  radius: {
-    base: '12px',
-    large: '20px',
-    full: '9999px'
+    textMuted: '#484f58'
   }
 };
 
-const FinalLockedUI = () => {
-  const [cart, setCart] = useState({ 5: 7 }); // Görseldeki gibi 7 adet Bullen-Bug
+const FinalApp = () => {
+  // Görseldeki gibi 6.0 kg Bullen-Bug ile başlıyoruz
+  const [cart, setCart] = useState({ 1: 6 }); 
+
+  // Ürünleri kategorileriyle tanımlıyoruz ki başlıklar kaybolmasın
+  const categories = [
+    {
+      id: "cat1",
+      name: "RIND/BULLE",
+      products: [
+        { id: 1, name: "Bullen-Bug" },
+        { id: 2, name: "Bullen-Keule" },
+        { id: 3, name: "Rinder-Nacken" }
+      ]
+    }
+  ];
 
   const handleUpdate = (id, delta) => {
     setCart(prev => ({ ...prev, [id]: Math.max(0, (prev[id] || 0) + delta) }));
   };
 
+  const totalKg = Object.values(cart).reduce((a, b) => a + b, 0);
+
   return (
     <div className="flex h-screen overflow-hidden font-sans" style={{ backgroundColor: THEME.colors.bgMain, color: THEME.colors.textMain }}>
       
-      {/* SOL SIDEBAR: SABİT GENİŞLİK */}
+      {/* SOL SIDEBAR */}
       <aside className="w-[240px] border-r flex flex-col shrink-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
         <div className="p-8">
           <div className="font-black text-2xl italic tracking-tighter uppercase" style={{ color: THEME.colors.primary }}>NEXTLOGI</div>
         </div>
         <nav className="flex-1 px-4 space-y-2">
           {['Dashboard', 'Sürücüler', 'Görev Atama', 'Müşteriler'].map((item) => (
-            <div key={item} className="flex items-center gap-4 px-4 py-3 font-bold text-[11px] transition-all cursor-pointer opacity-50 hover:opacity-100 group">
-              <LayoutGrid size={16} className="group-hover:text-[#00df82]" /> {item}
+            <div key={item} className="flex items-center gap-4 px-4 py-3 font-bold text-[11px] opacity-40 hover:opacity-100 cursor-pointer transition-all">
+              <LayoutGrid size={16} /> {item}
             </div>
           ))}
           <div className="flex items-center gap-4 px-5 py-4 rounded-2xl border" style={{ backgroundColor: 'rgba(0,223,130,0.05)', color: THEME.colors.primary, borderColor: 'rgba(0,223,130,0.1)' }}>
@@ -51,7 +58,7 @@ const FinalLockedUI = () => {
         </nav>
       </aside>
 
-      {/* MERKEZ PANEL: LİSTE ALANI */}
+      {/* MERKEZ PANEL */}
       <main className="flex-1 flex flex-col min-w-0">
         <header className="h-20 border-b flex items-center justify-between px-8" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
           <div className="bg-[#161b22] border border-white/[0.05] px-5 py-2 rounded-2xl flex items-center gap-4">
@@ -60,108 +67,104 @@ const FinalLockedUI = () => {
           </div>
           <div className="relative">
             <Search className="absolute left-3.5 top-2.5 text-gray-600" size={14}/>
-            <input type="text" placeholder="Ürün ara..." className="bg-[#161b22] border border-white/5 rounded-xl py-2 pl-10 pr-4 text-[11px] outline-none w-56 focus:border-[#00df82]/30 transition-all"/>
+            <input type="text" placeholder="Ürün ara..." className="bg-[#161b22] border border-white/5 rounded-xl py-2 pl-10 pr-4 text-[11px] outline-none w-56 focus:border-[#00df82]/30"/>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-8 space-y-2 custom-scrollbar">
-          {/* Ürün satırı örneği - Bullen Bug (image_577ebd.jpg'deki gibi aktif) */}
-          <div className="flex items-center justify-between p-4 px-8 rounded-xl border border-[#00df82]/20" style={{ backgroundColor: 'rgba(0,223,130,0.02)' }}>
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_#00df82]" style={{ backgroundColor: THEME.colors.primary }}/>
-              <span className="text-[11px] font-bold uppercase italic" style={{ color: THEME.colors.primary }}>BULLEN-BUG</span>
+        <div className="flex-1 overflow-y-auto p-8 space-y-4">
+          {categories[0].products.map((p) => (
+            <div key={p.id} className={`flex items-center justify-between p-4 px-8 rounded-xl border transition-all ${cart[p.id] > 0 ? 'border-[#00df82]/30 bg-[#00df82]/5' : 'border-white/[0.03] bg-[#161b22]/40'}`}>
+              <div className="flex items-center gap-3">
+                {cart[p.id] > 0 && <div className="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_#00df82]" style={{ backgroundColor: THEME.colors.primary }}/>}
+                <span className={`text-[11px] font-bold uppercase italic ${cart[p.id] > 0 ? 'text-[#00df82]' : 'opacity-30'}`}>{p.name}</span>
+              </div>
+              
+              {cart[p.id] > 0 ? (
+                <div className="flex items-center bg-black/20 rounded-lg border border-white/5 p-1 h-10">
+                  <button onClick={() => handleUpdate(p.id, -1)} className="px-3 text-gray-500"><Minus size={14}/></button>
+                  <span className="px-4 font-black text-xl italic text-[#00df82]">{cart[p.id]}</span>
+                  <button onClick={() => handleUpdate(p.id, 1)} className="px-3 text-gray-500"><Plus size={14}/></button>
+                </div>
+              ) : (
+                <button onClick={() => handleUpdate(p.id, 1)} className="text-gray-600 font-black text-[9px] border border-white/5 px-4 py-2 rounded-lg hover:bg-white/5 transition-all">+ ÜRÜN EKLE</button>
+              )}
             </div>
-            <div className="flex items-center bg-black/20 rounded-lg border border-white/5 p-1 h-10">
-              <button onClick={() => handleUpdate(5, -1)} className="px-3 text-gray-500 hover:text-white"><Minus size={14}/></button>
-              <span className="px-4 font-black text-xl italic" style={{ color: THEME.colors.primary }}>{cart[5] || 0}</span>
-              <button onClick={() => handleUpdate(5, 1)} className="px-3 text-gray-500 hover:text-white"><Plus size={14}/></button>
-            </div>
-          </div>
-          {/* Diğer ürünler pasif ve "Ürün Ekle" modunda */}
-          {["Bullen-Keule", "Rinder-Nacken"].map((n, i) => (
-             <div key={i} className="flex items-center justify-between p-4 px-8 rounded-xl border border-white/[0.02] bg-[#161b22]/40">
-                <span className="text-[11px] font-bold uppercase opacity-30">{n}</span>
-                <button className="text-gray-600 font-black text-[9px] border border-white/5 px-4 py-2 rounded-lg hover:bg-white/5">+ ÜRÜN EKLE</button>
-             </div>
           ))}
         </div>
       </main>
 
-      {/* SAĞ PANEL: SİPARİŞ ÖZETİ (image_578a00.png'ye göre mühürlendi) */}
-      <aside className="w-[360px] border-l flex flex-col shrink-0" style={{ backgroundColor: THEME.colors.bgMain, borderColor: 'rgba(255,255,255,0.05)' }}>
+      {/* SAĞ PANEL - image_578a00.png'ye GÖRE KATEGORİLER BURADA */}
+      <aside className="w-[360px] border-l flex flex-col shrink-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
         
-        {/* Header */}
         <div className="p-6 pb-2 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <ShoppingCart size={18} className="text-gray-400"/>
-            <h2 className="text-[13px] font-black uppercase italic tracking-tight">Sipariş Özeti</h2>
+            <h2 className="text-[13px] font-black uppercase italic">Sipariş Özeti</h2>
           </div>
           <span className="text-[10px] font-bold px-3 py-1 rounded-full border" style={{ color: THEME.colors.primary, backgroundColor: 'rgba(0,223,130,0.05)', borderColor: 'rgba(0,223,130,0.1)' }}>1 kalem</span>
         </div>
-        <div className="px-6 flex items-center gap-2 text-gray-600 mb-6">
-          <UserCircle size={14}/>
-          <span className="text-[11px] font-medium">Max Bauer GmbH</span>
-        </div>
 
-        <div className="flex-1 overflow-y-auto px-6 space-y-6 custom-scrollbar">
-          {/* Kategori ve Ürün Kartı */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full shadow-[0_0_5px_rgba(249,115,22,0.5)]" style={{ backgroundColor: THEME.colors.secondary }}/>
-              <span className="text-[10px] font-black uppercase italic tracking-widest" style={{ color: THEME.colors.secondary }}>RIND/BULLE</span>
-              <div className="flex-1 h-[1px] bg-white/[0.05]"/>
-              <span className="text-[10px] font-bold text-gray-600">4.0 kg</span>
-            </div>
+        <div className="flex-1 overflow-y-auto px-6 mt-4">
+          {categories.map(cat => {
+            // Sadece içinde ürün olan kategorileri göster
+            const catItems = cat.products.filter(p => cart[p.id] > 0);
+            if (catItems.length === 0) return null;
 
-            <div className="bg-[#161b22] rounded-xl p-4 border border-white/[0.03] flex justify-between items-start shadow-xl">
-              <div className="flex gap-3">
-                <div className="w-1.5 h-1.5 rounded-full mt-1.5" style={{ backgroundColor: THEME.colors.secondary }}/>
-                <div>
-                  <div className="text-[12px] font-bold text-gray-200 mb-1">Bullen-Bug</div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-[14px] font-black" style={{ color: THEME.colors.primary }}>{cart[5]}</span>
-                    <span className="text-[10px] font-bold text-gray-600 uppercase italic">kg</span>
-                  </div>
+            return (
+              <div key={cat.id} className="mb-8 space-y-4">
+                {/* KATEGORİ BAŞLIĞI - ARTIK SABİT! */}
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full shadow-[0_0_5px_rgba(249,115,22,0.5)]" style={{ backgroundColor: THEME.colors.secondary }}/>
+                  <span className="text-[10px] font-black uppercase italic tracking-widest" style={{ color: THEME.colors.secondary }}>{cat.name}</span>
+                  <div className="flex-1 h-[1px] bg-white/[0.05]"/>
+                  <span className="text-[10px] font-bold text-gray-600">{totalKg.toFixed(1)} kg</span>
                 </div>
+
+                {/* KATEGORİYE AİT ÜRÜNLER */}
+                {catItems.map(p => (
+                  <div key={p.id} className="bg-[#161b22] rounded-xl p-4 border border-white/[0.03] flex justify-between items-start">
+                    <div className="flex gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full mt-1.5" style={{ backgroundColor: THEME.colors.secondary }}/>
+                      <div>
+                        <div className="text-[12px] font-bold text-gray-200 mb-1">{p.name}</div>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-[14px] font-black text-[#00df82]">{cart[p.id]}</span>
+                          <span className="text-[9px] font-bold text-gray-600 uppercase italic">KG</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button onClick={() => handleUpdate(p.id, -cart[p.id])} className="p-1.5 bg-red-500/5 rounded-lg text-red-500/30 hover:text-red-500 transition-colors">
+                      <X size={16}/>
+                    </button>
+                  </div>
+                ))}
               </div>
-              <button onClick={() => handleUpdate(5, -cart[5])} className="p-1.5 bg-red-500/5 rounded-lg text-red-500/30 hover:text-red-500 transition-colors">
-                <X size={16}/>
-              </button>
-            </div>
-          </div>
+            );
+          })}
 
           {/* Not Alanı */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-gray-500 text-[10px] font-black uppercase italic tracking-widest">
-              📝 Teslimat Notu
-            </div>
-            <textarea 
-              placeholder="Özel not..." 
-              className="w-full bg-[#161b22]/50 border border-white/[0.05] rounded-xl p-4 text-[11px] min-h-[100px] outline-none text-gray-300 placeholder:text-gray-700 resize-none focus:border-white/10 transition-all shadow-inner"
-            />
+            <div className="text-gray-500 text-[10px] font-black uppercase italic tracking-widest">📝 Teslimat Notu</div>
+            <textarea placeholder="Özel not..." className="w-full bg-[#161b22]/50 border border-white/[0.05] rounded-xl p-4 text-[11px] min-h-[100px] outline-none text-gray-300 resize-none focus:border-white/10 shadow-inner"/>
           </div>
         </div>
 
-        {/* Toplam ve Buton: En alta yapışık */}
+        {/* ALT TOPLAM VE BUTON */}
         <div className="p-6 space-y-4 bg-[#0d1117] border-t border-white/[0.02]">
           <div className="bg-[#161b22]/30 border p-5 rounded-2xl" style={{ borderColor: 'rgba(0,223,130,0.15)' }}>
             <div className="text-[9px] text-gray-600 font-bold uppercase mb-1 tracking-widest">Toplam</div>
-            <div className="text-[18px] font-black italic" style={{ color: THEME.colors.primary }}>1 ürün • {cart[5]}.0 kg</div>
+            <div className="text-[18px] font-black italic text-[#00df82]">1 ürün • {totalKg.toFixed(1)} kg</div>
           </div>
           
-          <button className="w-full py-5 rounded-2xl font-black uppercase text-[12px] tracking-[0.2em] transition-all shadow-lg hover:brightness-110 active:scale-[0.98]" 
+          <button className="w-full py-5 rounded-2xl font-black uppercase text-[12px] tracking-[0.2em] shadow-lg hover:brightness-110 active:scale-[0.98]" 
             style={{ backgroundColor: THEME.colors.primary, color: THEME.colors.bgMain }}>
             Siparişi Tamamla
           </button>
         </div>
       </aside>
 
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1a1d23; border-radius: 10px; }
-      `}</style>
     </div>
   );
 };
 
-export default FinalLockedUI;
+export default FinalApp;
