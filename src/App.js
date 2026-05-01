@@ -1,67 +1,77 @@
 import React, { useState } from "react";
 
-export default function NextLogi_Admin_Final() {
-  const [customerName, setCustomerName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [registeredList, setRegisteredList] = useState([
-    { id: 1, name: "Örnek Müşteri", phone: "12345" }
+/**
+ * NEXTLOGI - MODÜL 4 (ŞOFÖR)
+ * Mantık: Firma sahibinden gelen işi gör ve "Teslim Edildi" olarak işaretle.
+ */
+export default function NextLogiDriverApp() {
+  // Firma sahibinden "Şoföre Ata" denilince buraya düşen hayali veri
+  const [myTasks, setMyTasks] = useState([
+    { id: 101, customer: "Örnek Müşteri", items: "2kg Dana, 1kg Tavuk", status: "Yolda" }
   ]);
 
-  // TEST İÇİN: Müşteriden gelen hayali bir sipariş
-  const [incomingOrders, setIncomingOrders] = useState([
-    { id: 101, customer: "Örnek Müşteri", items: "2kg Dana, 1kg Tavuk", status: "Beklemede" }
-  ]);
-
-  const saveCustomer = () => {
-    if(customerName && phone) {
-      setRegisteredList([...registeredList, { id: Date.now(), name: customerName, phone: phone }]);
-      setCustomerName(""); setPhone("");
-    }
+  const handleDelivery = (id) => {
+    setMyTasks(myTasks.map(task => 
+      task.id === id ? { ...task, status: "Teslim Edildi" } : task
+    ));
+    alert("Sipariş başarıyla teslim edildi! Firma sahibine bilgi verildi.");
   };
 
   return (
     <div style={{ backgroundColor: '#090d11', minHeight: '100vh', color: 'white', padding: '20px', fontFamily: 'sans-serif' }}>
+      <h2 style={{ color: '#2ecc71', textAlign: 'center' }}>Şoför Paneli</h2>
       
-      <h2 style={{ color: '#2ecc71', textAlign: 'center', fontWeight: '300' }}>Firma Yönetim Paneli</h2>
+      <p style={{ color: '#8b949e', textAlign: 'center', fontSize: '14px' }}>Bugünkü Teslimatların</p>
 
-      {/* image_3ad41c.png BURAYA GELİYOR */}
-      <div style={{ textAlign: 'center', margin: '20px 0' }}>
-        <img src="image_3ad41c.png" alt="Divider" style={{ maxWidth: '300px', opacity: 0.6 }} />
-      </div>
-
-      {/* MÜŞTERİ KAYIT (Görseldeki Kutu) */}
-      <div style={{ backgroundColor: '#111418', padding: '25px', borderRadius: '20px', border: '1px solid #1c2128', maxWidth: '500px', margin: '0 auto' }}>
-        <h4 style={{ marginTop: 0, color: '#8b949e' }}>Yeni Müşteri Tanımla</h4>
-        <input 
-           type="text" placeholder="Müşteri Adı / İşletme Adı" value={customerName}
-           onChange={(e) => setCustomerName(e.target.value)}
-           style={{ width: '100%', padding: '15px', backgroundColor: '#090d11', border: '1px solid #1c2128', borderRadius: '10px', color: 'white', marginBottom: '15px' }}
-        />
-        <input 
-           type="tel" placeholder="Cep Telefonu Numarası" value={phone}
-           onChange={(e) => setPhone(e.target.value)}
-           style={{ width: '100%', padding: '15px', backgroundColor: '#090d11', border: '1px solid #1c2128', borderRadius: '10px', color: 'white', marginBottom: '20px' }}
-        />
-        <button onClick={saveCustomer} style={{ width: '100%', padding: '18px', backgroundColor: '#2ecc71', border: 'none', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }}>
-          SİSTEME KAYDET
-        </button>
-      </div>
-
-      {/* CANLI SİPARİŞLER (Yeni Eklenen Mantık) */}
-      <div style={{ maxWidth: '500px', margin: '40px auto' }}>
-        <h3 style={{ borderLeft: '4px solid #2ecc71', paddingLeft: '10px' }}>Gelen Siparişler</h3>
-        {incomingOrders.map(order => (
-          <div key={order.id} style={{ backgroundColor: '#161b22', padding: '15px', borderRadius: '12px', marginTop: '10px', border: '1px solid #30363d' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontWeight: 'bold', color: '#2ecc71' }}>{order.customer}</span>
-              <span style={{ fontSize: '12px', backgroundColor: '#238636', padding: '2px 8px', borderRadius: '10px' }}>{order.status}</span>
-            </div>
-            <div style={{ fontSize: '14px', marginTop: '5px', color: '#8b949e' }}>{order.items}</div>
-            <button style={{ marginTop: '10px', width: '100%', padding: '8px', background: 'none', border: '1px solid #30363d', color: 'white', borderRadius: '5px', cursor: 'pointer' }}>Şoföre Ata</button>
+      {myTasks.map(task => (
+        <div key={task.id} style={{ 
+          backgroundColor: '#161b22', 
+          padding: '20px', 
+          borderRadius: '15px', 
+          marginTop: '20px', 
+          borderLeft: task.status === "Teslim Edildi" ? '5px solid #2ecc71' : '5px solid #f1c40f' 
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <span style={{ fontWeight: 'bold', fontSize: '18px' }}>{task.customer}</span>
+            <span style={{ 
+              fontSize: '12px', 
+              padding: '4px 8px', 
+              borderRadius: '5px', 
+              backgroundColor: task.status === "Teslim Edildi" ? '#238636' : '#9e6a03' 
+            }}>
+              {task.status}
+            </span>
           </div>
-        ))}
-      </div>
+          
+          <div style={{ color: '#8b949e', marginBottom: '20px' }}>
+            {task.items}
+          </div>
 
+          {task.status !== "Teslim Edildi" && (
+            <button 
+              onClick={() => handleDelivery(task.id)}
+              style={{ 
+                width: '100%', 
+                padding: '15px', 
+                backgroundColor: '#2ecc71', 
+                color: '#090d11', 
+                border: 'none', 
+                borderRadius: '10px', 
+                fontWeight: 'bold',
+                fontSize: '16px'
+              }}
+            >
+              TESLİM ETTİM
+            </button>
+          )}
+        </div>
+      ))}
+
+      {myTasks.filter(t => t.status === "Teslim Edildi").length > 0 && (
+        <div style={{ textAlign: 'center', marginTop: '30px', color: '#8b949e', fontSize: '12px' }}>
+          ✓ Tamamlanan teslimatlar arşive taşındı.
+        </div>
+      )}
     </div>
   );
 }
