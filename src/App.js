@@ -4,23 +4,35 @@ export default function NextLogiFixed() {
   const [quantities, setQuantities] = useState({});
   const [activeCategory, setActiveCategory] = useState("ALL");
 
+  // Ürün listesini biraz genişlettik ama yapıya dokunmadık
   const PRODUCTS = [
     { id: 1, name: "Bullen-Vorderviertel ohne Knochen", cat: "RIND / BULLE", color: "#e67e22" },
     { id: 2, name: "Bullen-Keule mit Knochen", cat: "RIND / BULLE", color: "#e67e22" },
     { id: 3, name: "Rinder-Nacken", cat: "RIND / BULLE", color: "#e67e22" },
     { id: 4, name: "Bullen-Bug", cat: "RIND / BULLE", color: "#e67e22" },
-    { id: 5, name: "Hähnchen-Brustfilet", cat: "HÄHNCHEN", color: "#f1c40f" },
-    { id: 6, name: "Kalbs-Schnitzel", cat: "KALB", color: "#3498db" }
+    { id: 5, name: "Rinder-Gulasch fein", cat: "RIND / BULLE", color: "#e67e22" },
+    { id: 6, name: "Hähnchen-Brustfilet", cat: "HÄHNCHEN", color: "#f1c40f" },
+    { id: 7, name: "Hähnchen-Schenkel", cat: "HÄHNCHEN", color: "#f1c40f" },
+    { id: 8, name: "Hähnchen-Flügel", cat: "HÄHNCHEN", color: "#f1c40f" },
+    { id: 9, name: "Kalbs-Schnitzel", cat: "KALB", color: "#3498db" },
+    { id: 10, name: "Kalbs-Haxe", cat: "KALB", color: "#3498db" },
+    { id: 11, name: "Kalbs-Rücken", cat: "KALB", color: "#3498db" }
   ];
 
   const categories = ["ALL", "RIND / BULLE", "HÄHNCHEN", "KALB"];
-  const filteredProducts = activeCategory === "ALL" ? PRODUCTS : PRODUCTS.filter(p => p.cat === activeCategory);
+  
+  // Filtreleme mantığı
+  const filteredProducts = activeCategory === "ALL" 
+    ? PRODUCTS 
+    : PRODUCTS.filter(p => p.cat === activeCategory);
+
+  // Sepet mantığı
   const activeItems = PRODUCTS.filter(p => Number(quantities[p.id]) > 0);
 
   return (
     <div style={{ display: 'flex', backgroundColor: '#090d11', color: '#c9d1d9', minHeight: '100vh', fontFamily: 'sans-serif', margin: 0 }}>
       
-      {/* SOL MENÜ */}
+      {/* SOL MENÜ - image_3ee754.jpg ile aynı */}
       <div style={{ width: '200px', padding: '20px', borderRight: '1px solid #161b22' }}>
         <h3 style={{ color: '#2ecc71', fontSize: '18px', marginBottom: '30px', fontWeight: 'bold' }}>NEXTLOGI</h3>
         <div style={{ backgroundColor: '#1a3a2a', color: '#4ade80', padding: '12px', borderRadius: '8px', marginBottom: '10px', fontSize: '14px', fontWeight: 'bold' }}>
@@ -36,7 +48,7 @@ export default function NextLogiFixed() {
           <span style={{ color: '#2ecc71', fontSize: '13px', fontWeight: 'bold' }}>ADIM 2/2</span>
         </div>
 
-        {/* YAN YANA KATEGORİ BUTONLARI */}
+        {/* YAN YANA KATEGORİLER - image_3ee754.jpg stili */}
         <div style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
           {categories.map(cat => (
             <button
@@ -48,9 +60,10 @@ export default function NextLogiFixed() {
                 border: `1px solid ${activeCategory === cat ? '#2ecc71' : '#30363d'}`,
                 padding: '8px 16px',
                 borderRadius: '20px',
-                fontSize: '12px',
+                fontSize: '11px',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                transition: '0.2s'
               }}
             >
               {cat}
@@ -68,7 +81,8 @@ export default function NextLogiFixed() {
             <span style={{ fontSize: '14px' }}>{p.name}</span>
             <input 
               type="number" 
-              value={quantities[p.id] || 0}
+              placeholder="0"
+              value={quantities[p.id] || ""}
               onChange={(e) => setQuantities({...quantities, [p.id]: e.target.value})}
               style={{ width: '60px', backgroundColor: '#0d1117', border: '1px solid #30363d', color: 'white', textAlign: 'center', borderRadius: '4px', padding: '8px', fontSize: '14px' }}
             />
@@ -76,7 +90,7 @@ export default function NextLogiFixed() {
         ))}
       </div>
 
-      {/* SAĞ PANEL */}
+      {/* SAĞ PANEL - SEPET */}
       <div style={{ width: '320px', padding: '20px', borderLeft: '1px solid #161b22', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', fontSize: '14px' }}>
           <span>🛒</span> <strong>Sipariş Özeti</strong>
