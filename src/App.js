@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { 
-  Truck, Users, PieChart, ShieldCheck, ChevronRight, Bell, 
-  ShoppingCart, Search, ArrowLeft, CheckCircle2
+  LayoutGrid, BarChart3, Box, AlertTriangle, Settings, LogOut, Plus, 
+  Search, Eye, ShieldCheck, CheckCircle2, Globe, Mail
 } from 'lucide-react';
 
-const NextLogiPro = () => {
+const SuperAdminDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activePanel, setActivePanel] = useState('dashboard');
   const [user, setUser] = useState({ username: '', password: '' });
 
   const handleLogin = (e) => {
@@ -18,98 +17,148 @@ const NextLogiPro = () => {
     }
   };
 
-  // --- 1. GİRİŞ EKRANI ---
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4 text-white font-sans">
-        <div className="max-w-md w-full bg-[#0a0f1a] border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
-          <ShieldCheck className="text-cyan-400 mx-auto mb-4" size={48} />
-          <h1 className="text-2xl font-bold mb-8 italic text-white uppercase tracking-tighter">NEXTLOGI <span className="text-cyan-400 font-black">PRO</span></h1>
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-[#0f1115] border border-white/5 rounded-3xl p-10 shadow-2xl">
+          <div className="text-center mb-10">
+            <div className="text-[#00df82] font-black text-3xl italic tracking-tighter mb-2">NEXTLOGI</div>
+            <div className="text-gray-500 text-xs font-bold uppercase tracking-[0.3em]">Süper Admin Girişi</div>
+          </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <input 
-              type="text" placeholder="Kullanıcı Adı" 
-              className="w-full bg-black border border-gray-800 rounded-xl p-3 outline-none focus:border-cyan-400 text-white"
+              type="text" placeholder="Kullanıcı" 
+              className="w-full bg-[#1a1d23] border border-white/5 rounded-xl p-4 text-white outline-none focus:border-[#00df82]/50 transition-all"
               onChange={(e) => setUser({...user, username: e.target.value})} 
             />
             <input 
               type="password" placeholder="Şifre" 
-              className="w-full bg-black border border-gray-800 rounded-xl p-3 outline-none focus:border-cyan-400 text-white"
+              className="w-full bg-[#1a1d23] border border-white/5 rounded-xl p-4 text-white outline-none focus:border-[#00df82]/50 transition-all"
               onChange={(e) => setUser({...user, password: e.target.value})} 
             />
-            <button className="w-full bg-cyan-500 text-black font-black py-3 rounded-xl hover:bg-cyan-400 transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(6,182,212,0.4)]">SİSTEME GİRİŞ YAP</button>
+            <button className="w-full bg-[#00df82] text-black font-black py-4 rounded-xl hover:brightness-110 transition-all uppercase tracking-widest text-sm">Sistemi Başlat</button>
           </form>
         </div>
       </div>
     );
   }
 
-  // --- 2. LOJİSTİK DETAY PANELİ ---
-  if (activePanel === 'lojistik') {
-    return (
-      <div className="min-h-screen bg-black text-white p-8 font-sans">
-        <button onClick={() => setActivePanel('dashboard')} className="flex items-center gap-2 text-cyan-400 mb-8 font-black uppercase text-xs tracking-widest hover:text-white transition-colors">
-          <ArrowLeft size={18} /> ANA MENÜYE DÖN
-        </button>
-        <div className="max-w-4xl mx-auto bg-[#0a0f1a] border border-gray-800 rounded-3xl p-10 shadow-2xl border-t-cyan-500/50">
-          <h2 className="text-3xl font-black text-cyan-400 mb-2 italic uppercase tracking-wider">Lojistik Operasyon Merkezi</h2>
-          <p className="text-gray-500 mb-8 italic border-b border-gray-800 pb-4">Anlık Sevkiyat ve Mühürleme Durumu</p>
-          <div className="grid gap-4">
-             {[
-               { p: '34 LOG 1923', r: 'Berlin - İstanbul', s: 'Mühürlendi', c: 'text-emerald-400' },
-               { p: '06 PRO 2024', r: 'Münih - Ankara', s: 'Yolda', c: 'text-cyan-400' },
-               { p: '35 NXT 1010', r: 'Hamburg - İzmir', s: 'Beklemede', c: 'text-orange-400' }
-             ].map((a, i) => (
-               <div key={i} className="bg-black/40 border border-gray-800 p-5 rounded-2xl flex justify-between items-center hover:border-cyan-500/30 transition-all group">
-                  <div>
-                    <div className="font-black text-xl group-hover:text-white transition-colors">{a.p}</div>
-                    <div className="text-[10px] text-gray-500 font-bold uppercase">{a.r}</div>
-                  </div>
-                  <div className={`text-[10px] font-black uppercase px-3 py-1 rounded border border-current shadow-[0_0_10px_rgba(0,0,0,0.5)] ${a.c}`}>{a.s}</div>
-               </div>
-             ))}
-          </div>
-          <div className="mt-10 flex items-center justify-center gap-2 text-cyan-400/50 text-[10px] font-black uppercase tracking-[0.2em] animate-pulse">
-            <CheckCircle2 size={14} /> Sistem Aktif • Veriler Senkronize
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // --- 3. ANA DASHBOARD (4 KARTLI) ---
-  const panels = [
-    { id: 'lojistik', title: 'Lojistik Operasyon', icon: <Truck />, color: 'text-blue-400', desc: 'Sevkiyat ve mühürleme yönetimi' },
-    { id: 'surucu', title: 'Sürücü Mobil App', icon: <Users />, color: 'text-emerald-400', desc: 'Sürücü takibi ve belge kontrolü' },
-    { id: 'finans', title: 'Finans Yönetimi', icon: <PieChart />, color: 'text-purple-400', desc: 'Taahhüt ve ödeme dengesi' },
-    { id: 'musteri', title: 'Müşteri Portalı', icon: <ShoppingCart />, color: 'text-orange-400', desc: 'Sipariş ve sepet yönetimi' }
-  ];
-
   return (
-    <div className="min-h-screen bg-black text-white p-8 font-sans">
-      <header className="mb-12">
-        <h1 className="text-5xl font-black italic mb-2 tracking-tighter">Hoş geldin, Kaptan 👋</h1>
-        <p className="text-gray-500 font-medium italic">Tüm ekosistemi tek merkezden yönetin.</p>
-      </header>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {panels.map((panel) => (
-          <div 
-            key={panel.id}
-            onClick={() => panel.id === 'lojistik' ? setActivePanel('lojistik') : alert(panel.title + ' yakında aktif edilecek!')} 
-            className="bg-[#0a0f1a] border border-gray-800 p-8 rounded-[2.5rem] hover:border-cyan-500/50 hover:scale-105 cursor-pointer group transition-all shadow-2xl relative overflow-hidden"
-          >
-            <div className={`mb-6 p-4 rounded-2xl bg-gray-900 w-fit group-hover:bg-cyan-500 group-hover:text-black transition-all ${panel.color}`}>
-              {panel.icon}
-            </div>
-            <h3 className="text-xl font-black uppercase mb-2 group-hover:text-cyan-400 transition-colors tracking-tight">{panel.title}</h3>
-            <p className="text-gray-500 text-[11px] font-bold italic mb-8 opacity-80 leading-relaxed">{panel.desc}</p>
-            <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-cyan-400 group-hover:translate-x-2 transition-transform">
-              Paneli Aç <ChevronRight size={14} className="ml-1" />
-            </div>
+    <div className="min-h-screen bg-[#0a0b0d] text-[#e1e1e3] flex font-sans">
+      {/* SOL SIDEBAR */}
+      <aside className="w-64 border-r border-white/5 flex flex-col p-6 bg-[#0d0f12]">
+        <div className="mb-10">
+          <div className="text-[#00df82] font-black text-2xl italic tracking-tighter leading-none">NEXTLOGI</div>
+          <div className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Süper Admin</div>
+        </div>
+
+        <nav className="flex-1 space-y-2">
+          <div className="flex items-center gap-3 bg-[#162a22] text-[#00df82] p-3 rounded-xl border border-[#00df82]/20 cursor-pointer">
+            <LayoutGrid size={18} /> <span className="text-sm font-bold">Firma Yönetimi</span>
           </div>
-        ))}
-      </div>
+          {[
+            { icon: <BarChart3 size={18} />, label: 'Finansal Dashboard' },
+            { icon: <Box size={18} />, label: 'Abonelik & Modül' },
+            { icon: <AlertTriangle size={18} />, label: 'Gecikmiş Ödemeler', badge: '2' },
+            { icon: <Settings size={18} />, label: 'Sistem Ayarları' }
+          ].map((item, i) => (
+            <div key={i} className="flex items-center justify-between p-3 text-gray-500 hover:text-white hover:bg-white/5 rounded-xl cursor-pointer transition-all">
+              <div className="flex items-center gap-3 text-sm font-bold">{item.icon} {item.label}</div>
+              {item.badge && <span className="bg-red-500/20 text-red-500 text-[10px] px-2 py-0.5 rounded-full font-black">{item.badge}</span>}
+            </div>
+          ))}
+        </nav>
+
+        <div className="mt-auto pt-6 border-t border-white/5">
+          <div className="bg-[#1a1d23] p-4 rounded-2xl mb-4">
+            <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Süper Admin</div>
+            <div className="text-sm font-black italic">NEXTLOGI Admin</div>
+          </div>
+          <button className="flex items-center gap-2 text-gray-500 hover:text-white text-xs font-bold transition-all">
+            <LogOut size={14} /> Çıkış Yap
+          </button>
+        </div>
+      </aside>
+
+      {/* ANA İÇERİK ALANI */}
+      <main className="flex-1 p-10 overflow-y-auto">
+        <header className="flex justify-between items-start mb-10">
+          <div>
+            <h1 className="text-4xl font-black text-white mb-2">Firma Yönetimi</h1>
+            <p className="text-gray-500 text-sm font-medium italic">5 firma · 2 gecikmiş</p>
+          </div>
+          <button className="bg-[#00df82] text-black px-6 py-3 rounded-xl font-black text-sm flex items-center gap-2 hover:brightness-110 transition-all">
+            <Plus size={18} strokeWidth={3} /> Yeni Firma
+          </button>
+        </header>
+
+        {/* UYARI MESAJI */}
+        <div className="bg-red-500/5 border border-red-500/20 p-5 rounded-2xl flex items-center gap-4 mb-8 text-red-500">
+          <AlertTriangle size={20} />
+          <span className="text-sm font-bold italic tracking-wide">2 firmada gecikmiş ödeme — €3.560</span>
+        </div>
+
+        {/* TABLO KONTEYNERI */}
+        <div className="bg-[#121418] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-white/5 bg-white/[0.02]">
+                <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-widest">Firma</th>
+                <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-widest">Şehir</th>
+                <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-widest text-center">Demo Yönetimi</th>
+                <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-widest">Giriş/Şifre</th>
+                <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-widest">Durum</th>
+                <th className="p-6 text-[10px] font-black text-gray-500 uppercase tracking-widest">Ürün Mod.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="hover:bg-white/[0.02] transition-colors group">
+                <td className="p-6 flex items-center gap-4">
+                  <div className="w-10 h-10 bg-emerald-500/20 text-[#00df82] rounded-full flex items-center justify-center text-[10px] font-black border border-[#00df82]/20 shadow-lg shadow-emerald-500/10">MÜ</div>
+                  <div>
+                    <div className="text-sm font-black text-white group-hover:text-[#00df82] transition-colors leading-none mb-1">Müller GmbH</div>
+                    <div className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">#F1</div>
+                  </div>
+                </td>
+                <td className="p-6">
+                  <div className="text-xs font-bold text-gray-400">Berlin</div>
+                </td>
+                <td className="p-6">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-[10px] font-black text-[#00df82] uppercase italic">30 GÜN AKTİF</div>
+                    <div className="flex gap-1">
+                      <div className="bg-emerald-500 text-black text-[10px] font-black px-3 py-2 rounded-lg border border-white/10 shadow-lg shadow-emerald-500/20 italic">30 GÜN</div>
+                      <div className="bg-red-500/10 text-red-500 text-[10px] font-black px-3 py-2 rounded-lg border border-red-500/30 italic">+7 GÜN</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-6">
+                  <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                    <span>owner@mullergmbh.de</span>
+                    <Eye size={12} className="text-gray-600" />
+                  </div>
+                  <div className="text-gray-700 mt-1">••••••••</div>
+                </td>
+                <td className="p-6">
+                  <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-500 text-[9px] font-black px-3 py-1 rounded-full border border-emerald-500/20 w-fit uppercase italic tracking-widest">
+                    <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" /> Aktif
+                  </div>
+                </td>
+                <td className="p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-6 bg-[#00df82] rounded-full relative p-1 shadow-lg shadow-emerald-500/20">
+                      <div className="w-4 h-4 bg-white rounded-full ml-auto shadow-sm" />
+                    </div>
+                    <span className="text-[10px] font-black text-gray-500 uppercase italic">Açık</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
     </div>
   );
 };
 
-export default NextLogiPro;
+export default SuperAdminDashboard;
