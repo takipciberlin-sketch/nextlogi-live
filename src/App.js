@@ -1,75 +1,78 @@
 /**
- * NEXTLOGI - MODÜL 4 (ŞOFÖR - ULTRA ERGONOMİK)
- * Mantık: Maksimum görünürlük, dev butonlar.
+ * NEXTLOGI - MODÜL 4 (ŞOFÖR - iPAD EDİSYONU)
+ * Mantık: iPad yatay/dikey ekranında maksimum ergonomi.
+ * Durum: MÜHÜRLENDİ 🔒
  */
 import React, { useState } from "react";
 
-export default function NextLogiDriverMegaButton() {
+export default function NextLogi_iPad_Driver_Final() {
   const [tasks, setTasks] = useState([
-    { id: 101, customer: "Örnek Müşteri", items: "2kg Dana, 1kg Tavuk", status: "Yolda" }
+    { id: 101, customer: "Özcan Et & Kasap", items: "5kg Dana Antrikot, 3 Koli Tavuk", status: "YOLDA" }
   ]);
 
-  const completeJob = (id) => {
-    setTasks(tasks.filter(t => t.id !== id)); // Teslim edileni listeden kaldır (ekran temiz kalsın)
-    alert("Teslimat Tamamlandı!");
+  const handleDelivery = (id) => {
+    // Gerçek sistemde bu buton basıldığında Firma Sahibi'ne bildirim gider.
+    setTasks([]);
+    alert("Teslimat Tamamlandı. Yeni iş bekleniyor...");
   };
 
   if (tasks.length === 0) {
     return (
-      <div style={{ backgroundColor: '#090d11', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b949e' }}>
-        <h2>Bekleyen İş Yok 👍</h2>
+      <div style={{ backgroundColor: '#090d11', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#2ecc71' }}>
+        <div style={{ fontSize: '100px' }}>🚚</div>
+        <h1 style={{ fontSize: '40px' }}>Yeni Sipariş Bekleniyor...</h1>
       </div>
     );
   }
 
   return (
-    <div style={{ backgroundColor: '#090d11', minHeight: '100vh', color: 'white', padding: '10px', fontFamily: 'sans-serif' }}>
+    <div style={{ backgroundColor: '#090d11', minHeight: '100vh', color: 'white', fontFamily: 'sans-serif', padding: '40px' }}>
       
-      <div style={{ textAlign: 'center', padding: '20px' }}>
-        <h1 style={{ color: '#2ecc71', fontSize: '30px', margin: 0 }}>Şoför Paneli</h1>
-        <p style={{ color: '#8b949e' }}>Bugünkü Teslimatların</p>
+      {/* ÜST BAŞLIK */}
+      <div style={{ borderBottom: '1px solid #1c2128', paddingBottom: '20px', marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 style={{ fontSize: '35px', color: '#2ecc71' }}>Şoför Teslimat Ekranı</h1>
+        <div style={{ fontSize: '20px', color: '#8b949e' }}>iPad Modu Aktif</div>
       </div>
 
       {tasks.map(task => (
         <div key={task.id} style={{ 
           backgroundColor: '#111418', 
-          borderRadius: '25px', 
-          padding: '30px', 
-          border: '2px solid #1c2128',
-          marginBottom: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          minHeight: '60vh' // Ekranın %60'ını kaplasın
+          borderRadius: '30px', 
+          padding: '50px', 
+          border: '2px solid #30363d',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
         }}>
-          {/* ÜST BİLGİ ALANI */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-               <h2 style={{ fontSize: '36px', margin: 0 }}>{task.customer}</h2>
-               <span style={{ backgroundColor: '#9e6a03', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold' }}>YOLDA</span>
+          {/* MÜŞTERİ VE DURUM */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <h2 style={{ fontSize: '60px', margin: '0 0 10px 0' }}>{task.customer}</h2>
+              <p style={{ fontSize: '30px', color: '#8b949e' }}>{task.items}</p>
             </div>
-            <p style={{ fontSize: '24px', color: '#8b949e', marginTop: '20px' }}>{task.items}</p>
+            <div style={{ backgroundColor: '#9e6a03', padding: '15px 30px', borderRadius: '15px', fontSize: '24px', fontWeight: 'bold' }}>
+              {task.status}
+            </div>
           </div>
 
-          {/* İŞTE O ABARTILI BÜYÜK BUTON */}
-          <button 
-            onClick={() => completeJob(task.id)}
-            style={{ 
-              width: '100%', 
-              height: '150px', // Devasa yükseklik
-              backgroundColor: '#2ecc71', 
-              color: '#090d11', 
-              border: 'none', 
-              borderRadius: '20px', 
-              fontSize: '40px', // Devasa yazı
-              fontWeight: '900',
-              cursor: 'pointer',
-              boxShadow: '0 10px 30px rgba(46, 204, 113, 0.3)',
-              textTransform: 'uppercase'
-            }}
-          >
-            TESLİM ETTİM
-          </button>
+          {/* image_3071b6.png'deki O DEV BUTON */}
+          <div style={{ marginTop: '80px' }}>
+            <button 
+              onClick={() => handleDelivery(task.id)}
+              style={{ 
+                width: '100%', 
+                height: '200px', // iPad'de devasa duracak
+                backgroundColor: '#2ecc71', 
+                color: '#090d11', 
+                border: 'none', 
+                borderRadius: '25px', 
+                fontSize: '50px', 
+                fontWeight: '900',
+                cursor: 'pointer',
+                boxShadow: '0 15px 45px rgba(46, 204, 113, 0.4)'
+              }}
+            >
+              TESLİM ETTİM
+            </button>
+          </div>
         </div>
       ))}
     </div>
