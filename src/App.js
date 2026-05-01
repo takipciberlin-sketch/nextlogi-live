@@ -1,185 +1,70 @@
-import React, { useState } from 'react';
-import { 
-  LayoutGrid, Users, Send, ShoppingBag, Fuel, CreditCard, 
-  LogOut, Package, UserCheck, Crown, ChevronRight, Clock, 
-  CheckCircle2, Plus, Search, Filter, MoreVertical
-} from 'lucide-react';
+// ... (Önceki kodun devamına Görev Atama görünümü eklendi)
 
-const FirmaSahibiPaneli = () => {
-  const [activeTab, setActiveTab] = useState('Dashboard');
-  
-  // Örnek Veri Setleri
-  const [suruculer] = useState([
-    { id: 1, isim: 'Thomas Klein', arac: 'Mercedes Sprinter', durum: 'Aktif', gorev: 'Q-031' },
-    { id: 2, isim: 'Sara Hoffmann', arac: 'VW Crafter', durum: 'Mola', gorev: 'Q-032' },
-    { id: 3, isim: 'Marc Weber', arac: 'Iveco Daily', durum: 'Aktif', gorev: 'Q-034' },
-  ]);
-
-  const stats = [
-    { label: 'GÖREV', val: '4', sub: '1 teslim', icon: <Package className="text-orange-500" size={20} />, bg: 'bg-orange-500/10' },
-    { label: 'AKTİF SÜRÜCÜ', val: suruculer.filter(s => s.durum === 'Aktif').length.toString(), sub: `${suruculer.length} toplam`, icon: <UserCheck className="text-blue-500" size={20} />, bg: 'bg-blue-500/10' },
-    { label: 'PLAN', val: '€1290', sub: 'Pro', icon: <Crown className="text-yellow-500" size={20} />, bg: 'bg-yellow-500/10' },
-    { label: 'ÜRÜN MODÜLÜ', val: 'Açık', sub: 'Sınırsız', icon: <Package className="text-green-500" size={20} />, bg: 'bg-green-500/10' },
-  ];
-
-  const gorevler = [
-    { id: 'Q-031', adres: 'Berliner Str. 42, 10115', kisi: 'Thomas Klein', durum: 'Yolda', color: 'text-blue-400', dot: 'bg-blue-400' },
-    { id: 'Q-032', adres: 'Hauptstraße 8, 10178', kisi: 'Sara Hoffmann', durum: 'Teslim', color: 'text-green-400', dot: 'bg-green-400' },
-    { id: 'Q-033', adres: 'Unter den Linden 5', kisi: '—', durum: 'Beklemede', color: 'text-orange-400', dot: 'bg-orange-400' },
-    { id: 'Q-034', adres: 'Kurfürstendamm 22', kisi: 'Marc Weber', durum: 'Beklemede', color: 'text-orange-400', dot: 'bg-orange-400' },
-  ];
-
-  return (
-    <div className="min-h-screen bg-[#0a0b0d] text-[#e1e1e3] flex font-sans leading-tight overflow-hidden">
-      
-      {/* SIDEBAR - DEĞİŞMEZ İSKELET */}
-      <aside className="w-64 border-r border-white/5 flex flex-col bg-[#0d0f12] shrink-0">
-        <div className="p-6">
-          <div className="text-[#00df82] font-black text-xl italic tracking-tighter">NEXTLOGI</div>
-          <div className="text-[10px] text-gray-600 font-bold tracking-[0.3em] mt-1 uppercase">Firma Paneli</div>
-        </div>
-
-        <nav className="flex-1 px-4 space-y-1">
-          {[
-            { n: 'Dashboard', i: <LayoutGrid size={18}/> },
-            { n: 'Sürücüler', i: <Users size={18}/> },
-            { n: 'Görev Atama', i: <Send size={18}/> },
-            { n: 'Müşteriler', i: <Users size={18}/> },
-            { n: 'Ürünler & Sipariş', i: <ShoppingBag size={18}/> },
-            { n: 'Yakıt Raporu', i: <Fuel size={18}/>, count: 1 },
-            { n: 'Ödeme', i: <CreditCard size={18}/> },
-          ].map((item) => (
-            <div 
-              key={item.n}
-              onClick={() => setActiveTab(item.n)}
-              className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all font-bold text-sm ${activeTab === item.n ? 'bg-[#162a22] text-[#00df82] border border-[#00df82]/10' : 'text-gray-500 hover:bg-white/5'}`}
-            >
-              <div className="flex items-center gap-3">{item.i} {item.n}</div>
-              {item.count && <span className="bg-red-500/20 text-red-500 text-[10px] px-2 py-0.5 rounded-full font-black">{item.count}</span>}
-            </div>
-          ))}
-        </nav>
-
-        {/* ALT PROFİL BÖLGESİ */}
-        <div className="p-4 space-y-3 border-t border-white/5">
-          <div className="bg-[#162a22] p-3 rounded-xl border border-[#00df82]/20 flex items-center gap-3">
-             <Package size={16} className="text-[#00df82]" />
-             <span className="text-[10px] font-black text-[#00df82] uppercase tracking-widest">Ürün Modülü Aktif</span>
-          </div>
-          <div className="bg-[#1a1d23] p-4 rounded-2xl border border-white/5">
-            <div className="text-[9px] font-black text-blue-500 uppercase tracking-widest mb-1">Firma Sahibi</div>
-            <div className="text-sm font-black text-white leading-none text-nowrap">Klaus Müller</div>
-            <div className="text-[10px] text-gray-500 mt-1">Müller GmbH</div>
-          </div>
-          <button className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-white text-[10px] font-black transition-all py-2 uppercase tracking-widest">
-            <LogOut size={14} /> Çıkış Yap
-          </button>
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 overflow-y-auto bg-[#0a0b0d] p-10">
-        
-        {/* DİNAMİK BAŞLIK */}
-        <header className="mb-10 flex justify-between items-end">
-          <div>
-            <h1 className="text-4xl font-black text-white italic tracking-tighter uppercase leading-none">Müller GmbH</h1>
-            <p className="text-gray-600 font-bold text-xs mt-2 uppercase tracking-widest italic">{activeTab} Paneli</p>
-          </div>
-          {activeTab === 'Sürücüler' && (
-            <button className="bg-[#00df82] text-black px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center gap-2">
-              <Plus size={16} strokeWidth={3} /> Yeni Sürücü Kaydet
-            </button>
-          )}
-        </header>
-
-        {/* DASHBOARD GÖRÜNÜMÜ */}
-        {activeTab === 'Dashboard' && (
-          <>
-            <div className="grid grid-cols-4 gap-4 mb-8">
-              {stats.map((s, idx) => (
-                <div key={idx} className="bg-[#121418] border border-white/5 p-6 rounded-[2rem] relative overflow-hidden group hover:border-white/10 transition-all">
-                  <div className={`${s.bg} w-12 h-12 rounded-2xl flex items-center justify-center mb-6`}>{s.icon}</div>
-                  <div className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">{s.label}</div>
-                  <div className="text-4xl font-black text-white mb-1 tracking-tighter">{s.val}</div>
-                  <div className="text-[10px] font-bold text-[#00df82] italic uppercase">{s.sub}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-[#121418] border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">Son Operasyonel Görevler</h3>
-                <button onClick={() => setActiveTab('Görev Atama')} className="text-[10px] font-black text-[#00df82] uppercase tracking-widest">Tümünü Yönet</button>
+        {/* GÖREV ATAMA GÖRÜNÜMÜ */}
+        {activeTab === 'Görev Atama' && (
+          <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
+            {/* SOL: GÖREV LİSTESİ */}
+            <div className="col-span-8 bg-[#121418] border border-white/5 rounded-[2rem] flex flex-col overflow-hidden">
+              <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">Görev Havuzu</h3>
+                <button className="bg-white/5 px-4 py-2 rounded-lg text-[10px] font-black uppercase text-gray-400 border border-white/5 hover:text-white transition-all">
+                  + Yeni Rota Oluştur
+                </button>
               </div>
-              <div className="divide-y divide-white/5">
+              
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {gorevler.map((g, idx) => (
-                  <div key={idx} className="flex items-center p-5 hover:bg-white/[0.02] transition-all group cursor-pointer">
-                    <div className="w-16 text-[10px] font-black text-gray-600 uppercase tracking-widest">{g.id}</div>
-                    <div className="flex-1 text-sm font-bold text-gray-300">{g.adres}</div>
-                    <div className="w-40 text-sm font-bold text-gray-500 text-right">{g.kisi}</div>
-                    <div className="w-32 flex justify-end items-center gap-2 pl-4">
-                      <div className={`px-3 py-1.5 rounded-full bg-black/40 border border-white/5 flex items-center gap-2`}>
-                        <div className={`w-1.5 h-1.5 rounded-full ${g.dot} shadow-[0_0_8px_rgba(0,0,0,0.5)]`} />
-                        <span className={`text-[10px] font-black uppercase italic ${g.color}`}>{g.durum}</span>
+                  <div key={idx} className="bg-black/40 border border-white/5 p-5 rounded-2xl flex items-center justify-between group hover:border-[#00df82]/30 transition-all">
+                    <div className="flex items-center gap-6">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black italic text-xs ${g.kisi === '—' ? 'bg-red-500/10 text-red-500' : 'bg-[#00df82]/10 text-[#00df82]'}`}>
+                        {g.id}
                       </div>
+                      <div>
+                        <div className="text-white font-bold text-sm">{g.adres}</div>
+                        <div className="text-[10px] text-gray-600 font-bold uppercase mt-1">Son Güncelleme: 12:45</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      {g.kisi === '—' ? (
+                        <button className="bg-[#00df82] text-black px-4 py-2 rounded-lg text-[10px] font-black uppercase">Sürücü Ata</button>
+                      ) : (
+                        <div className="text-right mr-4">
+                          <div className="text-[9px] text-gray-600 font-black uppercase">Atanan Sürücü</div>
+                          <div className="text-white text-xs font-bold uppercase italic">{g.kisi}</div>
+                        </div>
+                      )}
+                      <ChevronRight className="text-gray-700 group-hover:translate-x-1 transition-transform" size={18} />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          </>
-        )}
 
-        {/* SÜRÜCÜLER GÖRÜNÜMÜ */}
-        {activeTab === 'Sürücüler' && (
-          <div className="bg-[#121418] border border-white/5 rounded-[2rem] overflow-hidden">
-            <div className="p-6 border-b border-white/5 flex gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-3.5 text-gray-600" size={18} />
-                <input type="text" placeholder="Sürücü veya plaka ara..." className="w-full bg-black/40 border border-white/5 rounded-xl p-3 pl-12 text-sm outline-none focus:border-[#00df82]/30" />
-              </div>
-              <button className="bg-white/5 p-3 rounded-xl border border-white/5 text-gray-400"><Filter size={20}/></button>
-            </div>
-            <div className="grid grid-cols-1 divide-y divide-white/5">
-              {suruculer.map(s => (
-                <div key={s.id} className="p-6 flex items-center justify-between hover:bg-white/[0.01]">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 font-black italic">
-                      {s.isim.charAt(0)}
-                    </div>
-                    <div>
-                      <div className="font-black text-white uppercase italic tracking-tighter text-lg">{s.isim}</div>
-                      <div className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{s.arac}</div>
-                    </div>
+            {/* SAĞ: ÖZET VE HARİTA ÖNİZLEME */}
+            <div className="col-span-4 space-y-6">
+              <div className="bg-[#121418] border border-white/5 rounded-[2rem] p-6 h-1/2 relative overflow-hidden">
+                <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Anlık Rota İzleme</div>
+                <div className="absolute inset-6 mt-12 bg-black/60 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center p-6">
+                  <div className="w-16 h-16 bg-[#00df82]/10 rounded-full flex items-center justify-center mb-4 animate-pulse">
+                     <Send className="text-[#00df82]" size={24} />
                   </div>
-                  <div className="flex items-center gap-12">
-                    <div className="text-right">
-                      <div className="text-[10px] font-black text-gray-600 uppercase mb-1">Aktif Görev</div>
-                      <div className="text-[#00df82] font-black italic">{s.gorev}</div>
-                    </div>
-                    <span className={`px-4 py-1 rounded-lg text-[10px] font-black uppercase ${s.durum === 'Aktif' ? 'bg-[#00df82]/10 text-[#00df82]' : 'bg-orange-500/10 text-orange-500'}`}>
-                      {s.durum}
-                    </span>
-                    <button className="text-gray-700 hover:text-white"><MoreVertical size={20}/></button>
-                  </div>
+                  <div className="text-xs font-black text-white uppercase italic">Canlı Harita Servisi</div>
+                  <div className="text-[9px] text-gray-600 font-bold uppercase mt-2 tracking-tighter italic">GPS verileri bekleniyor...</div>
                 </div>
-              ))}
+              </div>
+
+              <div className="bg-[#00df82] rounded-[2rem] p-8 flex flex-col justify-between group cursor-pointer relative overflow-hidden h-[calc(50%-24px)]">
+                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
+                  <Package size={80} strokeWidth={3} className="text-black" />
+                </div>
+                <div className="relative z-10">
+                  <div className="text-black font-black text-2xl italic tracking-tighter leading-none">HIZLI<br/>RAPOR AL</div>
+                  <p className="text-black/60 text-[10px] font-black uppercase mt-2">Günlük operasyon özeti</p>
+                </div>
+                <div className="relative z-10 flex items-center gap-2 text-black font-black text-xs uppercase tracking-widest">
+                  DOSYAYI İNDİR <ChevronRight size={14} />
+                </div>
+              </div>
             </div>
           </div>
         )}
-
-        {/* DİĞER PANELLER İÇİN YER TUTUCU */}
-        {activeTab !== 'Dashboard' && activeTab !== 'Sürücüler' && (
-          <div className="h-64 border-2 border-dashed border-white/5 rounded-[2rem] flex flex-col items-center justify-center text-gray-700">
-             <Clock size={48} className="mb-4 opacity-20" />
-             <div className="font-black uppercase tracking-[0.3em] italic opacity-20">{activeTab} Modülü Hazırlanıyor</div>
-          </div>
-        )}
-
-      </main>
-    </div>
-  );
-};
-
-export default FirmaSahibiPaneli;
