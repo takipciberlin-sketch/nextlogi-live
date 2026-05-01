@@ -11,6 +11,7 @@ const NextLogiPro = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
+    // Kaptan, giriş bilgileri burada:
     if (user.username === 'admin' && user.password === '1234') {
       setIsLoggedIn(true);
     } else {
@@ -18,7 +19,7 @@ const NextLogiPro = () => {
     }
   };
 
-  // 1. ADIM: GİRİŞ EKRANI
+  // 1. BÖLÜM: GİRİŞ EKRANI (SİSTEM KİLİDİ)
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4 font-sans text-white">
@@ -27,25 +28,33 @@ const NextLogiPro = () => {
             <div className="bg-cyan-500/20 p-4 rounded-full mb-4 border border-cyan-500/30">
               <ShieldCheck className="text-cyan-400" size={32} />
             </div>
-            <h1 className="text-2xl font-bold tracking-tighter">NEXTLOGI <span className="text-cyan-400">PRO</span></h1>
+            <h1 className="text-2xl font-bold tracking-tighter text-white">NEXTLOGI <span className="text-cyan-400">PRO</span></h1>
             <p className="text-gray-500 text-sm mt-2 font-medium italic">Uçtan Uca Mühürlü Veri Sistemi</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-gray-500 text-xs font-bold uppercase mb-2 ml-1">Kullanıcı</label>
-              <div className="relative">
+              <div className="relative text-white">
                 <User className="absolute left-3 top-3.5 text-gray-600" size={18} />
-                <input type="text" placeholder="admin" className="w-full bg-black border border-gray-800 rounded-xl py-3 pl-10 pr-4 focus:border-cyan-500 outline-none transition-all"
-                  onChange={(e) => setUser({...user, username: e.target.value})} />
+                <input 
+                  type="text" 
+                  placeholder="admin" 
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 pl-10 pr-4 focus:border-cyan-500 outline-none transition-all text-white"
+                  onChange={(e) => setUser({...user, username: e.target.value})} 
+                />
               </div>
             </div>
             <div>
               <label className="block text-gray-500 text-xs font-bold uppercase mb-2 ml-1">Şifre</label>
-              <div className="relative">
+              <div className="relative text-white">
                 <Lock className="absolute left-3 top-3.5 text-gray-600" size={18} />
-                <input type="password" placeholder="1234" className="w-full bg-black border border-gray-800 rounded-xl py-3 pl-10 pr-4 focus:border-cyan-500 outline-none transition-all"
-                  onChange={(e) => setUser({...user, password: e.target.value})} />
+                <input 
+                  type="password" 
+                  placeholder="1234" 
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 pl-10 pr-4 focus:border-cyan-500 outline-none transition-all text-white"
+                  onChange={(e) => setUser({...user, password: e.target.value})} 
+                />
               </div>
             </div>
             <button className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-black py-4 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
@@ -57,7 +66,7 @@ const NextLogiPro = () => {
     );
   }
 
-  // 2. ADIM: LOJİSTİK OPERASYON DETAYI
+  // 2. BÖLÜM: LOJİSTİK OPERASYON DETAYI
   if (activePanel === 'lojistik') {
     return (
       <div className="min-h-screen bg-black text-white p-6 font-sans">
@@ -68,7 +77,7 @@ const NextLogiPro = () => {
           <div className="bg-[#0a0f1a] border border-gray-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-10"><Truck size={120} /></div>
             <h2 className="text-3xl font-black italic mb-2 text-cyan-400 uppercase tracking-widest">Lojistik Operasyon Merkezi</h2>
-            <p className="text-gray-400 mb-8 font-medium italic underline decoration-cyan-500/30">Anlık Sevkiyat ve Mühürleme Durumu</p>
+            <p className="text-gray-400 mb-8 font-medium italic">Anlık Sevkiyat ve Mühürleme Durumu</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
@@ -98,25 +107,25 @@ const NextLogiPro = () => {
     );
   }
 
-  // 3. ADIM: ANA DASHBOARD
+  // 3. BÖLÜM: ANA DASHBOARD
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-cyan-500/30">
       <nav className="border-b border-gray-900 p-4 flex justify-between items-center sticky top-0 bg-black/80 backdrop-blur-md z-50">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActivePanel('dashboard')}>
           <div className="bg-cyan-500 p-1 rounded shadow-[0_0_15px_rgba(6,182,212,0.5)]">
             <ShieldCheck className="text-black" size={20} />
           </div>
           <span className="text-xl font-black tracking-tighter italic">NEXTLOGI <span className="text-cyan-400 underline decoration-2">PRO</span></span>
         </div>
         <div className="flex gap-4 items-center">
-          <Bell size={20} className="text-gray-500 hover:text-white transition-colors" />
+          <Bell size={20} className="text-gray-500 hover:text-white transition-colors cursor-pointer" />
           <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-black font-black text-xs border-2 border-cyan-400">KP</div>
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto p-8">
         <header className="mb-12">
-          <h1 className="text-5xl font-black italic tracking-tighter mb-2">Hoş geldin, Kaptan 🫡</h1>
+          <h1 className="text-5xl font-black italic tracking-tighter mb-2">Hoş geldin, Kaptan 👋</h1>
           <p className="text-gray-500 font-medium italic text-lg">Tüm ekosistemi tek merkezden yönetin.</p>
         </header>
 
