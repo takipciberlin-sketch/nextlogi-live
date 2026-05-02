@@ -1,13 +1,10 @@
-// FirebaseConfig.js
-import { initializeApp } from "firebase/app";
-import { getDatabase } from "firebase/database";
-
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  // Burayı Firebase Console -> Proje Ayarları -> Web Uygulaması kısmından almalısın
-  apiKey: "SENIN_API_KEYIN",
-  databaseURL: "https://PROJE_ID-default-rtdb.firebaseio.com",
-  projectId: "PROJE_ID",
-};
-
-const app = initializeApp(firebaseConfig);
-export const db = getDatabase(app);
+    apiKey: "AIzaSyAXZkJp1HA4NSbaWJZzjkWy2UTFCMKEn1I",
+    authDomain: "nextlogi-v19.firebaseapp.com",
+    projectId: "nextlogi-v19",
+    storageBucket: "nextlogi-v19.firebasestorage.app",
+    messagingSenderId: "69939460458",
+    appId: "1:69939460458:web:7094f54f2789a608c94d13",
+    measurementId: "G-F6E0D0QWE7"
+  };
