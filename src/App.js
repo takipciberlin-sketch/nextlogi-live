@@ -1,32 +1,41 @@
-import { db } from "./firebaseConfig"; // Daha önce oluşturduğumuz config
-import { ref, get, child } from "firebase/database";
+import React, { useState } from 'react';
+import MusteriApp from './MusteriApp';
+import SoforiPad from './SoforiPad';
 
-const handleLogin = async (inputPhone) => {
-  const dbRef = ref(db);
-  
-  try {
-    // 1. Veritabanındaki whitelist'e bak
-    const snapshot = await get(child(dbRef, `whitelist/${inputPhone}`));
-    
-    if (snapshot.exists()) {
-      // 2. Müşteri beyaz listede var!
-      const userData = snapshot.val();
-      
-      // Telefonun hafızasına mühürle (Beni Hatırla)
-      localStorage.setItem("nextlogi_user", JSON.stringify({
-        phone: inputPhone,
-        name: userData.name,
-        isVerified: true
-      }));
+export default function App() {
+  // Başlangıçta müşteri ekranı görünsün
+  const [mod, setMod] = useState('musteri'); 
 
-      alert(`Hoş geldin ${userData.name}!`);
-      window.location.reload(); // Uygulamayı sipariş ekranıyla yenile
-    } else {
-      // 3. Numara listede yok
-      alert("HATA: Bu numara sisteme kayıtlı değil. Lütfen firma ile iletişime geçin.");
-    }
-  } catch (error) {
-    console.error("Güvenlik kontrolü sırasında hata oluştu:", error);
-    alert("Bir bağlantı sorunu oluştu.");
-  }
-};
+  return (
+    <div style={{ position: 'relative' }}>
+      {/* TEST PANELİ: Ekranlar arası geçiş yapmak için sağ üste butonlar koyduk */}
+      <div style={{
+        position: 'fixed', 
+        top: '10px', 
+        right: '10px', 
+        zIndex: 9999, 
+        background: 'rgba(255,255,255,0.1)', 
+        padding: '10px', 
+        borderRadius: '8px',
+        display: 'flex',
+        gap: '10px'
+      }}>
+        <button 
+          onClick={() => setMod('musteri')}
+          style={{ padding: '8px', cursor: 'pointer', backgroundColor: mod === 'musteri' ? '#2ecc71' : '#fff' }}
+        >
+          📱 Müşteri Ekranı
+        </button>
+        <button 
+          onClick={() => setMod('sofor')}
+          style={{ padding: '8px', cursor: 'pointer', backgroundColor: mod === 'sofor' ? '#2ecc71' : '#fff' }}
+        >
+          🚛 Şoför Ekranı
+        </button>
+      </div>
+
+      {/* Hangi mod seçiliyse o dosyayı ekrana yansıt */}
+      {mod === 'musteri' ? <MusteriApp /> : <SoforiPad />}
+    </div>
+  );
+}
