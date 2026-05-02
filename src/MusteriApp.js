@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { db } from './FirebaseConfig';
 import { ref, set } from "firebase/database";
+import { useNavigate } from 'react-router-dom'; // Yönlendirme için eklendi
 
 export default function MusteriApp() {
   const [phone, setPhone] = useState("1234");
+  const navigate = useNavigate(); // Yönlendirme kancası
 
   const sistemeGir = () => {
     set(ref(db, 'aktifSiparis/'), {
@@ -13,16 +15,18 @@ export default function MusteriApp() {
       durum: "Hazırlanıyor",
       saat: new Date().toLocaleTimeString()
     }).then(() => {
-      alert("Firebase'e bağlandık! Veri şoföre iletildi. ✅");
+      // Onay mesajından sonra otomatik olarak şoför sayfasına git
+      setTimeout(() => {
+        navigate('/sofor');
+      }, 500); 
     }).catch((error) => {
       alert("Hata: " + error.message);
     });
   };
 
   return (
-    <div style={{ backgroundColor: '#090d11', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', color: 'white', fontFamily: 'sans-serif' }}>
+    <div style={{ backgroundColor: '#090d11', height: '90vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', color: 'white' }}>
       <h1 style={{ color: '#2ecc71', fontSize: '40px' }}>NEXTLOGI</h1>
-      <p style={{ color: '#8b949e', marginBottom: '30px' }}>Müşteri Girişi</p>
       <input 
         type="tel" 
         value={phone}

@@ -6,20 +6,19 @@ import SoforiPad from './SoforiPad';
 export default function App() {
   return (
     <Router>
-      <div>
-        {/* Navigasyon Menüsü - Her yerden erişmek için üstte sabit durur */}
+      <div style={{ backgroundColor: '#090d11', minHeight: '100vh' }}>
+        {/* Görünürlüğü artırılmış Navigasyon */}
         <nav style={{ 
           position: 'fixed', top: 0, left: 0, right: 0, 
-          backgroundColor: '#1c2128', padding: '10px', 
-          display: 'flex', justifyContent: 'center', gap: '20px',
-          zIndex: 1000, borderBottom: '1px solid #30363d' 
+          backgroundColor: '#1c2128', padding: '15px', 
+          display: 'flex', justifyContent: 'center', gap: '30px',
+          zIndex: 1000, borderBottom: '2px solid #2ecc71' 
         }}>
-          <Link to="/" style={{ color: '#2ecc71', textDecoration: 'none', fontWeight: 'bold' }}>Müşteri Girişi</Link>
-          <Link to="/sofor" style={{ color: '#2ecc71', textDecoration: 'none', fontWeight: 'bold' }}>Şoför Paneli (iPad)</Link>
+          <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold', fontSize: '16px' }}>🏠 MÜŞTERİ GİRİŞİ</Link>
+          <Link to="/sofor" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold', fontSize: '16px' }}>🚛 ŞOFÖR PANELİ</Link>
         </nav>
 
-        {/* Sayfa İçerikleri */}
-        <div style={{ paddingTop: '60px' }}> 
+        <div style={{ paddingTop: '80px' }}> 
           <Routes>
             <Route path="/" element={<MusteriApp />} />
             <Route path="/sofor" element={<SoforiPad />} />
